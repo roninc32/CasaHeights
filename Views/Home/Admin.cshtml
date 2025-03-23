@@ -1,0 +1,252 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Admin Dashboard</h1>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary">
+                <i class="fas fa-download fa-sm me-2"></i>Export Report
+            </button>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus fa-sm me-2"></i>New Action
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card hover-lift">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-primary-subtle rounded-3 p-3 me-3">
+                        <i class="fas fa-users fa-2x text-primary"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-1 fw-bold">245</h3>
+                        <p class="text-muted mb-0">Total Residents</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card hover-lift">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-success-subtle rounded-3 p-3 me-3">
+                        <i class="fas fa-money-bill fa-2x text-success"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-1 fw-bold">₱125,000</h3>
+                        <p class="text-muted mb-0">Payments Received</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card hover-lift">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-warning-subtle rounded-3 p-3 me-3">
+                        <i class="fas fa-clock fa-2x text-warning"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-1 fw-bold">12</h3>
+                        <p class="text-muted mb-0">Pending Requests</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card hover-lift">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-danger-subtle rounded-3 p-3 me-3">
+                        <i class="fas fa-exclamation-circle fa-2x text-danger"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-1 fw-bold">5</h3>
+                        <p class="text-muted mb-0">Complaints</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Monthly Collections</h5>
+                        <p class="text-muted small mb-0">Last 6 months revenue</p>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Last 6 months</a></li>
+                            <li><a class="dropdown-item" href="#">This year</a></li>
+                            <li><a class="dropdown-item" href="#">Custom range</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlyCollectionsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Service Requests</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="serviceRequestsPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Features -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card hover-lift">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-primary-subtle rounded-3 p-3 me-3">
+                            <i class="fas fa-user-cog fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="card-title mb-0">User Management</h5>
+                    </div>
+                    <p class="card-text text-muted mb-4">Create and manage all user accounts with enhanced security features.</p>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Account" asp-action="CreateUser" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>Create New User
+                        </a>
+                        <a asp-controller="Account" asp-action="UserList" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>View User List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card hover-lift">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-primary-subtle rounded-3 p-3 me-3">
+                            <i class="fas fa-bullhorn fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="card-title mb-0">Announcements</h5>
+                    </div>
+                    <p class="card-text text-muted mb-4">Manage community announcements and notices.</p>
+                    <div class="d-grid gap-2">
+                        <a href="#" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>Create Announcement
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>View All
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card hover-lift">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-primary-subtle rounded-3 p-3 me-3">
+                            <i class="fas fa-calendar-alt fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="card-title mb-0">Facility Bookings</h5>
+                    </div>
+                    <p class="card-text text-muted mb-4">Manage facility reservations and schedules.</p>
+                    <div class="d-grid gap-2">
+                        <a href="#" class="btn btn-primary">
+                            <i class="fas fa-calendar me-2"></i>View Calendar
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fas fa-cogs me-2"></i>Manage Facilities
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Monthly Collections Chart
+        const monthlyCtx = document.getElementById('monthlyCollectionsChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Collections (₱)',
+                    data: [125000, 138000, 142000, 132000, 148000, 125000],
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            borderDash: [2],
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Service Requests Pie Chart
+        const pieCtx = document.getElementById('serviceRequestsPieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Maintenance', 'Security', 'Complaints', 'Others'],
+                datasets: [{
+                    data: [12, 8, 5, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+}
