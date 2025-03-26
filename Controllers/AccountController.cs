@@ -54,45 +54,43 @@ namespace CasaHeights.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+[HttpPost]
+[AllowAnonymous]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Register(RegisterViewModel model)
+{
+    if (ModelState.IsValid)
+    {
+        var user = new Users
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            var user = new Users
-            {
-                UserName = model.Email,
-                NormalizedUserName = model.Email.ToUpper(),
-                Email = model.Email,
-                NormalizedEmail = model.Email.ToUpper(),
-                FullName = model.Name,
-                PhoneNumber = model.PhoneNumber,
-                HouseNumber = model.HouseNumber,  // Add this line
-                DateCreated = DateTime.UtcNow,
-                DateUpdated = DateTime.UtcNow
-            };
-            var result = await userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                var roleExist = await roleManager.RoleExistsAsync("User");
-                if (!roleExist)
-                {
-                    var role = new IdentityRole("User");
-                    await roleManager.CreateAsync(role);
-                }
-                await userManager.AddToRoleAsync(user, "User");
-                await signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Login", "Account");
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return View(model);
+            UserName = model.Email,
+            Email = model.Email,
+            FullName = model.Name,
+            HouseNumber = model.HouseNumber, // Ensure HouseNumber is set
+            PhoneNumber = model.PhoneNumber,
+            DateCreated = DateTime.UtcNow,
+            DateUpdated = DateTime.UtcNow
+        };
+
+        var result = await userManager.CreateAsync(user, model.Password);
+        if (result.Succeeded)
+        {
+            // Assign a default role of "User" to registered users
+            await userManager.AddToRoleAsync(user, "User");
+            
+            await signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToAction("Index", "Home");
         }
+        
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+    }
+    
+    // If we got this far, something failed, redisplay form
+    return View(model);
+}
 
         // User Management Actions (Admin Only)
         [HttpGet]
@@ -106,48 +104,42 @@ namespace CasaHeights.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateUser(CreateUserViewModel model)
+[HttpPost]
+[Authorize(Roles = "Admin")]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> CreateUser(CreateUserViewModel model)
+{
+    if (ModelState.IsValid)
+    {
+        var user = new Users
         {
-            if (!ModelState.IsValid)
-            {
-                model.Roles = new List<string> { "User", "Staff" };
-                return View(model);
-            }
+            UserName = model.Email,
+            Email = model.Email,
+            FullName = model.Name,
+            HouseNumber = model.HouseNumber, // Ensure HouseNumber is set
+            PhoneNumber = model.PhoneNumber,
+            DateCreated = DateTime.UtcNow,
+            DateUpdated = DateTime.UtcNow
+        };
 
-            // Check if email already exists
-            if (await userManager.FindByEmailAsync(model.Email) != null)
-            {
-                ModelState.AddModelError("Email", "Email already exists");
-                model.Roles = new List<string> { "User", "Staff" };
-                return View(model);
-            }
-
-            var user = new Users
-            {
-                FullName = model.Name,
-                UserName = model.Email,
-                Email = model.Email,
-                EmailConfirmed = true // Since admin is creating the user
-            };
-
-            var result = await userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(user, model.Role);
-                return RedirectToAction(nameof(UserList));
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-
-            model.Roles = new List<string> { "User", "Staff" };
-            return View(model);
+        var result = await userManager.CreateAsync(user, model.Password);
+        if (result.Succeeded)
+        {
+            // Assign the selected role
+            await userManager.AddToRoleAsync(user, model.Role);
+            
+            return RedirectToAction("UserList");
         }
+        
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+    }
+    
+    // If we got this far, something failed, redisplay form
+    return View(model);
+}
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UserList()
