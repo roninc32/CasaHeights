@@ -141,26 +141,65 @@ public async Task<IActionResult> CreateUser(CreateUserViewModel model)
     return View(model);
 }
 
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UserList()
+// AccountController.cs
+[HttpGet]
+[Authorize(Roles = "Admin")]
+public async Task<IActionResult> UserList(string role)
+{
+    try
+    {
+        // Create list for view models
+        var viewModels = new List<UserListViewModel>();
+        
+        // Get all users
+        var allUsers = await userManager.Users
+            .OrderByDescending(u => u.DateCreated)
+            .ToListAsync();
+        
+        // Step 1: First process all users to get their roles
+        foreach (var user in allUsers)
         {
-            var users = await userManager.Users.ToListAsync();
-            var userViewModels = new List<UserListViewModel>();
-
-            foreach (var user in users)
+            // Get user roles
+            var userRoles = await userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault() ?? "User"; // Default to "User" if none found
+            
+            // Step 2: Add to the view model collection (we'll filter later)
+            viewModels.Add(new UserListViewModel
             {
-                var roles = await userManager.GetRolesAsync(user);
-                userViewModels.Add(new UserListViewModel
-                {
-                    Id = user.Id,
-                    Name = user.FullName,
-                    Email = user.Email,
-                    Role = roles.FirstOrDefault() ?? "N/A"
-                });
-            }
-
-            return View(userViewModels);
+                Id = user.Id,
+                Name = user.FullName ?? "Unknown",
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                HouseNumber = user.HouseNumber,
+                ProfilePicture = user.ProfilePicture,
+                DateCreated = user.DateCreated,
+                DateUpdated = user.DateUpdated,
+                Role = userRole
+            });
         }
+        
+        // Step 3: Apply role filtering if needed
+        if (!string.IsNullOrEmpty(role))
+        {
+            // This is the key: filter the viewModels collection by role
+            viewModels = viewModels.Where(u => u.Role == role).ToList();
+        }
+        
+        // Optional: You can add this line if you want to log information
+        // If you don't have a logger, you can remove these lines
+        // Console.WriteLine($"Filtered users by role '{role}', found {viewModels.Count} users");
+        
+        return View(viewModels);
+    }
+    catch (Exception ex)
+    {
+        // Remove or replace this line if you don't have a logger
+        // Console.WriteLine($"Error retrieving user list: {ex.Message}");
+        
+        TempData["ErrorMessage"] = "An error occurred while loading users.";
+        return View(new List<UserListViewModel>());
+    }
+}
 
         [HttpGet]
         [Authorize(Roles = "Admin")]

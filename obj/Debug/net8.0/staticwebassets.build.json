@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nyDcH95NB+QGFS8oD1OIt0d5L+Bi5TZl78/zA4u9Hx0=",
+  "Hash": "tzkJqkRrI/HT0E4k8lTgzrTEIEHUPQoHAv9h0gNlbtM=",
   "Source": "CasaHeights",
   "BasePath": "_content/CasaHeights",
   "Mode": "Default",
@@ -224,25 +224,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\Villa.jpg"
-    },
-    {
-      "Identity": "C:\\Users\\User\\source\\repos\\Project\\CasaHeights\\wwwroot\\images\\Village.jpg",
-      "SourceId": "CasaHeights",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\User\\source\\repos\\Project\\CasaHeights\\wwwroot\\",
-      "BasePath": "_content/CasaHeights",
-      "RelativePath": "images/Village.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\Village.jpg"
     },
     {
       "Identity": "C:\\Users\\User\\source\\repos\\Project\\CasaHeights\\wwwroot\\js\\site.js",
