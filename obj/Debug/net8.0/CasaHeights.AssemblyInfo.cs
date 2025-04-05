@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CasaHeights")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5df42d89f8f402cb91071d52492c6f93bdb943db")]
 [assembly: System.Reflection.AssemblyProductAttribute("CasaHeights")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CasaHeights")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

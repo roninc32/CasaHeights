@@ -1,124 +1,374 @@
 ﻿@{
-    ViewData["Title"] = "Casa Heights - Modern Living Community";
+    ViewData["Title"] = "Welcome Home | Casa Heights";
 }
 
-<!-- Hero Section -->
-<div class="hero-section">
-    <div class="overlay"></div>
-    <div class="container h-100">
-        <div class="row h-100 align-items-center">
-            <div class="col-lg-6 hero-content" data-aos="fade-right">
-                <h1 class="hero-title">Experience Luxury Living at Casa Heights</h1>
-                <p class="hero-subtitle">Where Community Meets Comfort</p>
-                <div class="hero-buttons">
-                    <a href="/tour" class="btn btn-primary btn-lg">Take a Virtual Tour</a>
-                    <a href="#about" class="btn btn-outline-light btn-lg ms-3">Learn More</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="hero-scroll-indicator">
-        <a href="#features"><i class="bi bi-chevron-down"></i></a>
-    </div>
-</div>
-
-<!-- Stats Section -->
-<div class="stats-section py-4">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-3 stat-item">
-                <div class="stat-number">200+</div>
-                <div class="stat-label">Happy Residents</div>
-            </div>
-            <div class="col-md-3 stat-item">
-                <div class="stat-number">15</div>
-                <div class="stat-label">Amenities</div>
-            </div>
-            <div class="col-md-3 stat-item">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Security</div>
-            </div>
-            <div class="col-md-3 stat-item">
-                <div class="stat-number">98%</div>
-                <div class="stat-label">Satisfaction Rate</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Features Grid -->
-<section id="features" class="features-section">
-    <div class="container">
-        <div class="section-header text-center" data-aos="fade-up">
-            <h2>Why Choose Casa Heights?</h2>
-            <p class="lead">Experience the perfect blend of comfort and convenience</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-item" data-aos="fade-up">
-                <div class="feature-icon">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-                <h3>24/7 Security</h3>
-                <p>Round-the-clock security with CCTV surveillance</p>
-            </div>
-            <!-- Add 5 more feature items -->
-        </div>
-    </div>
-</section>
-
-<!-- Amenities Showcase -->
-<section class="amenities-section bg-light">
-    <div class="container">
-        <div class="section-header text-center" data-aos="fade-up">
-            <h2>Premium Amenities</h2>
-            <p class="lead">Discover our world-class facilities</p>
-        </div>
-        <div class="amenities-slider" data-aos="fade-up">
-            <!-- Add image slides here -->
-        </div>
-    </div>
-</section>
-
-<!-- Community Life -->
-<section class="community-section">
+<!-- Hero Section - Simple Clean Design -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6" data-aos="fade-right">
-                <img src="/images/community-life.jpg" class="img-fluid rounded-3" alt="Community Life">
-            </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <div class="ps-lg-5">
-                    <h2>Experience Community Living</h2>
-                    <p class="lead">Join a vibrant community where neighbors become friends</p>
-                    <ul class="community-features">
-                        <li><i class="bi bi-check-circle"></i> Regular community events</li>
-                        <li><i class="bi bi-check-circle"></i> Family-friendly environment</li>
-                        <li><i class="bi bi-check-circle"></i> Active lifestyle promotion</li>
-                    </ul>
+            <div class="col-lg-7 hero-content">
+                <span class="welcome-badge">Welcome Home</span>
+                <h1 class="hero-title">Your Sanctuary at Casa Heights</h1>
+                <p class="hero-subtitle">Experience the perfect balance of luxury living, community connection, and modern convenience in our peaceful residential haven.</p>
+                <div class="hero-buttons">
+                    <a href="/Announcement" class="btn btn-primary rounded-pill">
+                        <i class="bi bi-bell me-2"></i>Community Updates
+                    </a>
+                    <a href="#services" class="btn btn-outline-light rounded-pill ms-3">
+                        <i class="bi bi-house-heart me-2"></i>Resident Services
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Contact Section -->
-<section class="contact-section">
+<!-- Resident Quick Access Panel -->
+<section id="services" class="quick-access-panel py-5 bg-white">
     <div class="container">
-        <div class="contact-wrapper bg-white rounded-4 shadow-lg">
-            <div class="row g-0">
-                <div class="col-lg-6 contact-info-side">
-                    <div class="p-5">
-                        <h2>Get in Touch</h2>
-                        <p class="lead mb-4">We're here to answer any questions</p>
-                        <div class="contact-details">
-                            <!-- Contact details here -->
+        <div class="section-header mb-4 text-center">
+            <h2 class="h3 fw-bold">Resident Services</h2>
+            <p class="text-muted">Everything you need in one place</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 col-lg-3">
+                <div class="access-card h-100">
+                    <div class="card h-100 border-0 text-center shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="access-icon mb-3">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <h3 class="access-title h5 mb-2">Amenity Booking</h3>
+                            <p class="access-desc text-muted mb-3">Reserve facilities and amenities with ease</p>
+                            <a href="/Booking" class="btn btn-sm btn-outline-primary rounded-pill">Book Now</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 contact-form-side">
-                    <div class="p-5">
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="access-card h-100">
+                    <div class="card h-100 border-0 text-center shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="access-icon mb-3">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <h3 class="access-title h5 mb-2">Maintenance</h3>
+                            <p class="access-desc text-muted mb-3">Submit and track your maintenance requests</p>
+                            <a href="/Maintenance" class="btn btn-sm btn-outline-primary rounded-pill">Request</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="access-card h-100">
+                    <div class="card h-100 border-0 text-center shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="access-icon mb-3">
+                                <i class="bi bi-credit-card-2-front"></i>
+                            </div>
+                            <h3 class="access-title h5 mb-2">Pay Dues</h3>
+                            <p class="access-desc text-muted mb-3">Manage and pay your monthly association dues</p>
+                            <a href="/Payments" class="btn btn-sm btn-outline-primary rounded-pill">Pay Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="access-card h-100">
+                    <div class="card h-100 border-0 text-center shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="access-icon mb-3">
+                                <i class="bi bi-chat-left-dots"></i>
+                            </div>
+                            <h3 class="access-title h5 mb-2">Community</h3>
+                            <p class="access-desc text-muted mb-3">Connect with neighbors and join discussions</p>
+                            <a href="/Community" class="btn btn-sm btn-outline-primary rounded-pill">Join</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Announcements Section -->
+<section class="announcements-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="h3 fw-bold mb-0">Latest Announcements</h2>
+            </div>
+            <a href="/Announcements" class="btn btn-outline-primary rounded-pill btn-sm">View All</a>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-soft-primary text-primary me-2">Important</span>
+                            <small class="text-muted">Apr 10, 2025</small>
+                        </div>
+                        <h3 class="h5 mb-2">Swimming Pool Maintenance</h3>
+                        <p class="text-muted mb-3">The community swimming pool will be closed for annual maintenance from April 12-14.</p>
+                        <a href="/Announcements/Details/1" class="text-decoration-none">Read More →</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-soft-success text-success me-2">Notice</span>
+                            <small class="text-muted">Apr 8, 2025</small>
+                        </div>
+                        <h3 class="h5 mb-2">New Online Payment System</h3>
+                        <p class="text-muted mb-3">We're excited to announce our new online payment system that makes paying association dues easier than ever.</p>
+                        <a href="/Announcements/Details/2" class="text-decoration-none">Read More →</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-soft-info text-info me-2">Community</span>
+                            <small class="text-muted">Apr 5, 2025</small>
+                        </div>
+                        <h3 class="h5 mb-2">Welcome New Community Manager</h3>
+                        <p class="text-muted mb-3">Please join us in welcoming Ms. Elena Martinez as our new Community Manager.</p>
+                        <a href="/Announcements/Details/3" class="text-decoration-none">Read More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Events -->
+<section class="events-section py-5 bg-white">
+    <div class="container">
+        <div class="section-header mb-4 text-center">
+            <h2 class="h3 fw-bold">Upcoming Community Events</h2>
+            <p class="text-muted">Join us and connect with your neighbors</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="event-date mb-3 text-center">
+                            <div class="date-box bg-light p-2 rounded">
+                                <span class="month text-muted small d-block">APRIL</span>
+                                <span class="day h3 fw-bold d-block">15</span>
+                            </div>
+                        </div>
+                        <h3 class="h5 mb-2 text-center">Spring Community Garden Day</h3>
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-muted small me-3"><i class="bi bi-clock me-1"></i> 9:00 AM</span>
+                            <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i> Community Garden</span>
+                        </div>
+                        <p class="text-muted mb-3 text-center">Join us for planting and beautifying our community garden. All supplies provided.</p>
+                        <div class="text-center">
+                            <a href="/Events/Details/1" class="btn btn-sm btn-outline-primary rounded-pill">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="event-date mb-3 text-center">
+                            <div class="date-box bg-light p-2 rounded">
+                                <span class="month text-muted small d-block">APRIL</span>
+                                <span class="day h3 fw-bold d-block">22</span>
+                            </div>
+                        </div>
+                        <h3 class="h5 mb-2 text-center">Sunrise Yoga Session</h3>
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-muted small me-3"><i class="bi bi-clock me-1"></i> 7:30 AM</span>
+                            <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i> Central Lawn</span>
+                        </div>
+                        <p class="text-muted mb-3 text-center">Start your day with a rejuvenating yoga session led by instructor Sarah. All levels welcome.</p>
+                        <div class="text-center">
+                            <a href="/Events/Details/2" class="btn btn-sm btn-outline-primary rounded-pill">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="event-date mb-3 text-center">
+                            <div class="date-box bg-light p-2 rounded">
+                                <span class="month text-muted small d-block">APRIL</span>
+                                <span class="day h3 fw-bold d-block">29</span>
+                            </div>
+                        </div>
+                        <h3 class="h5 mb-2 text-center">Family Movie Night</h3>
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-muted small me-3"><i class="bi bi-clock me-1"></i> 7:00 PM</span>
+                            <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i> Community Park</span>
+                        </div>
+                        <p class="text-muted mb-3 text-center">Bring blankets and chairs for a family-friendly outdoor movie under the stars.</p>
+                        <div class="text-center">
+                            <a href="/Events/Details/3" class="btn btn-sm btn-outline-primary rounded-pill">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Community Resources -->
+<section class="resources-section py-5 bg-light">
+    <div class="container">
+        <div class="section-header mb-4 text-center">
+            <h2 class="h3 fw-bold">Community Resources</h2>
+            <p class="text-muted">Important documents and information</p>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="resource-icon mb-3">
+                            <i class="bi bi-journal-text"></i>
+                        </div>
+                        <h3 class="h5 mb-2">Homeowner's Guide</h3>
+                        <p class="text-muted small mb-3">Essential information for all residents</p>
+                        <a href="/Resources/Guide" class="btn btn-sm btn-outline-primary rounded-pill">Download</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="resource-icon mb-3">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h3 class="h5 mb-2">Community Rules</h3>
+                        <p class="text-muted small mb-3">Regulations and guidelines for the community</p>
+                        <a href="/Resources/Rules" class="btn btn-sm btn-outline-primary rounded-pill">Download</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="resource-icon mb-3">
+                            <i class="bi bi-calendar4-week"></i>
+                        </div>
+                        <h3 class="h5 mb-2">Event Calendar</h3>
+                        <p class="text-muted small mb-3">Monthly schedule of community activities</p>
+                        <a href="/Resources/Calendar" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 border-0 text-center shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="resource-icon mb-3">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                        <h3 class="h5 mb-2">Contact Directory</h3>
+                        <p class="text-muted small mb-3">Important numbers and contact information</p>
+                        <a href="/Resources/Contacts" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Info Section -->
+<section class="contact-section py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="h3 fw-bold mb-4">We're Here For You</h2>
+                <p class="mb-4">Have questions or need assistance? Our management team is ready to help make your Casa Heights experience exceptional.</p>
+                
+                <div class="contact-details">
+                    <div class="contact-item d-flex align-items-center mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Visit Us</h6>
+                            <p class="mb-0 text-muted">123 Casa Heights Drive</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-center mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Email Us</h6>
+                            <p class="mb-0 text-muted">support@casaheights.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-center mb-3">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Call Us</h6>
+                            <p class="mb-0 text-muted">(555) 123-4567</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item d-flex align-items-center">
+                        <div class="contact-icon me-3">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Office Hours</h6>
+                            <p class="mb-0 text-muted">Mon-Fri: 8AM-6PM, Sat: 9AM-1PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-3">Send Us a Message</h3>
                         <form class="contact-form">
-                            <!-- Form fields here -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Your Email</label>
+                                    <input type="email" class="form-control" id="email">
+                                </div>
+                                <div class="col-12">
+                                    <label for="subject" class="form-label">Subject</label>
+                                    <input type="text" class="form-control" id="subject">
+                                </div>
+                                <div class="col-12">
+                                    <label for="message" class="form-label">Your Message</label>
+                                    <textarea class="form-control" id="message" rows="4"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary rounded-pill">
+                                        <i class="bi bi-send me-2"></i>Send Message
+                                    </button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -126,3 +376,116 @@
         </div>
     </div>
 </section>
+
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/hero-casa-heights.jpg');
+        background-size: cover;
+        background-position: center;
+        padding: 8rem 0;
+        color: white;
+    }
+    
+    .welcome-badge {
+        display: inline-block;
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-title {
+        font-size: 2.75rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.125rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-bottom: 2rem;
+    }
+    
+    /* Access Cards */
+    .access-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        font-size: 28px;
+        color: var(--bs-primary);
+    }
+    
+    /* Section Styling */
+    .section-header {
+        margin-bottom: 2rem;
+    }
+    
+    .py-5 {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    
+    /* Badge Soft Colors */
+    .bg-soft-primary {
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    
+    .bg-soft-success {
+        background-color: rgba(var(--bs-success-rgb), 0.1);
+    }
+    
+    .bg-soft-info {
+        background-color: rgba(var(--bs-info-rgb), 0.1);
+    }
+    
+    /* Event Date Box */
+    .date-box {
+        width: 80px;
+        margin: 0 auto;
+    }
+    
+    .resource-icon, .contact-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: var(--bs-primary);
+        margin: 0 auto;
+    }
+    
+    .contact-icon {
+        margin: 0;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    /* Light neutral colors */
+    body {
+        color: #555;
+        background-color: #f8f9fa;
+    }
+    
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
