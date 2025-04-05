@@ -1,0 +1,87 @@
+﻿@using CasaHeights.ViewModels;
+@model LoginViewModel;
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="account-container">
+    <div class="account-box">
+        <div class="logo-container text-center mb-4">
+            <!-- <img src="~/img/logo.png" alt="Casa Heights Logo" class="logo" onerror="this.src='~/img/default-logo.png'; this.onerror='';" /> -->
+            <h1 class="app-name">Casa Heights</h1>
+        </div>
+        
+        <h2 class="text-center mb-4">Welcome Back</h2>
+        <p class="text-center text-muted mb-4">Please enter your credentials to access your account</p>
+        
+        <form asp-action="Login" method="post" class="needs-validation" novalidate>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Email" class="form-control" placeholder="name@example.com" autocomplete="username" />
+                <label asp-for="Email"></label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Password" class="form-control" type="password" placeholder="Password" autocomplete="current-password" />
+                <label asp-for="Password"></label>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label"></label>
+                </div>
+                <a asp-controller="Account" asp-action="VerifyEmail" class="text-decoration-none forgot-password">
+                    Forgot Password?
+                </a>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 p-3 mb-3 login-btn">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
+            </button>
+            
+            <div class="text-center mb-3">
+                <span class="or-divider">OR</span>
+            </div>
+            
+            <p class="text-center mb-4">
+                Don't have an account? <a asp-controller="Account" asp-action="Register" class="text-decoration-none register-link">Create Account</a>
+            </p>
+            
+            <div class="text-center">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary back-btn">
+                    <i class="bi bi-arrow-left me-2"></i> Back to Home
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+    <script>
+        // Add floating label animation effect
+        document.querySelectorAll('.form-floating input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    input.parentElement.classList.remove('focused');
+                }
+            });
+            // Initialize state on page load
+            if (input.value) {
+                input.parentElement.classList.add('focused');
+            }
+        });
+    </script>
+}
