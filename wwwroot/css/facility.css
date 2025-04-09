@@ -1,0 +1,65 @@
+.facility-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.facility-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.facility-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.facility-features {
+    list-style: none;
+    padding-left: 0;
+}
+
+.facility-features li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.facility-features li i {
+    margin-right: 10px;
+    color: #4e73df;
+    width: 20px;
+    text-align: center;
+}
+
+.time-slot {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.time-slot:hover {
+    background-color: #f8f9fa;
+}
+
+.time-slot.selected {
+    background-color: #4e73df;
+    color: white;
+}
+
+.time-slot.unavailable {
+    background-color: #f8d7da;
+    color: #721c24;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.reservation-summary {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.facility-calendar .fc-event {
+    cursor: pointer;
+}
+

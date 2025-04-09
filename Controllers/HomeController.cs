@@ -2,16 +2,20 @@ using System.Diagnostics;
 using CasaHeights.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CasaHeights.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CasaHeights.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -38,8 +42,23 @@ namespace CasaHeights.Controllers
         }
 
         [Authorize(Roles = "User")]
-        public IActionResult User()
+        public async Task<IActionResult> User()
         {
+            // Get top facilities for the dashboard
+            ViewBag.Facilities = await _context.Facilities
+                .Where(f => f.IsActive)
+                .OrderBy(f => f.Name)
+                .Take(3)
+                .ToListAsync();
+
+            // Get recent announcements
+            ViewBag.RecentAnnouncements = await _context.Announcements
+                .Where(a => a.ExpiryDate >= DateTime.Now)
+                .OrderByDescending(a => a.IsUrgent)
+                .ThenByDescending(a => a.PostedDate)
+                .Take(3)
+                .ToListAsync();
+
             return View();
         }
 

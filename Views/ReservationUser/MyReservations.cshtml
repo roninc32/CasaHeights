@@ -1,0 +1,255 @@
+@model IEnumerable<CasaHeights.Models.Reservation>
+
+@{
+    ViewData["Title"] = "My Reservations";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">My Facility Reservations</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="mb-4">
+        <a asp-controller="FacilityUser" asp-action="Index" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Book a Facility
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> You don't have any reservations yet. 
+            Click the "Book a Facility" button to make your first reservation.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center
+                                    @(item.Status == ReservationStatus.Approved ? "bg-success bg-opacity-25" : 
+                                      item.Status == ReservationStatus.Pending ? "bg-warning bg-opacity-25" : 
+                                      item.Status == ReservationStatus.Rejected ? "bg-danger bg-opacity-25" : "bg-secondary bg-opacity-25")">
+                            <h5 class="mb-0">@item.Facility.Name</h5>
+                            <span class="badge
+                                       @(item.Status == ReservationStatus.Approved ? "bg-success" : 
+                                         item.Status == ReservationStatus.Pending ? "bg-warning text-dark" : 
+                                         item.Status == ReservationStatus.Rejected ? "bg-danger" : "bg-secondary")">
+                                @item.Status
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-calendar-day me-2 text-primary"></i>
+                                    <strong>Date:</strong>
+                                    <span class="ms-2">@item.ReservationDate.ToString("dddd, MMMM d, yyyy")</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-clock me-2 text-primary"></i>
+                                    <strong>Time:</strong>
+                                    <span class="ms-2">@item.StartTime.ToString("h:mm tt") - @item.EndTime.ToString("h:mm tt")</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-info-circle me-2 text-primary"></i>
+                                    <strong>Purpose:</strong>
+                                    <span class="ms-2">@item.Purpose</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-users me-2 text-primary"></i>
+                                    <strong>Attendees:</strong>
+                                    <span class="ms-2">@item.AttendeeCount</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-money-bill-wave me-2 text-primary"></i>
+                                    <strong>Total Cost:</strong>
+                                    <span class="ms-2">@item.TotalAmount.ToString("C")</span>
+                                </div>
+                            </div>
+                            
+                            @if (item.Status == ReservationStatus.Rejected && !string.IsNullOrEmpty(item.RejectionReason))
+                            {
+                                <div class="alert alert-danger py-2 mb-0">
+                                    <strong>Reason for rejection:</strong> @item.RejectionReason
+                                </div>
+                            }
+                            
+                            @if (item.Status == ReservationStatus.Cancelled && !string.IsNullOrEmpty(item.CancellationReason))
+                            {
+                                <div class="alert alert-secondary py-2 mb-0">
+                                    <strong>Reason for cancellation:</strong> @item.CancellationReason
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Reserved on @item.CreatedDate.ToString("MMM d, yyyy")</small>
+                                <div>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                    
+                                    @if ((item.Status == ReservationStatus.Pending || item.Status == ReservationStatus.Approved) &&
+                                         item.StartTime > DateTime.Now.AddHours(24))
+                                    {
+                                        <a asp-action="Cancel" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetStatusClass(ReservationStatus status)
+    {
+        return status switch
+        {
+            ReservationStatus.Approved => "bg-success bg-opacity-25",
+            ReservationStatus.Pending => "bg-warning bg-opacity-25",
+            ReservationStatus.Rejected => "bg-danger bg-opacity-25",
+            ReservationStatus.Cancelled => "bg-secondary bg-opacity-25",
+            _ => "bg-light"
+        };
+    }
+
+    private string GetStatusBadgeClass(ReservationStatus status)
+    {
+        return status switch
+        {
+            ReservationStatus.Approved => "bg-success",
+            ReservationStatus.Pending => "bg-warning text-dark",
+            ReservationStatus.Rejected => "bg-danger",
+            ReservationStatus.Cancelled => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+}
+
+@section Styles {
+    <style>
+        /* Calendar icon styling */
+        .calendar-icon {
+            width: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-month {
+            background-color: #dc3545;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 2px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        .calendar-day {
+            background-color: white;
+            color: #333;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 5px;
+        }
+        
+        /* Card hover effect */
+        .card {
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Badge styling */
+        .badge {
+            font-size: 0.8rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Filters for reservations
+            $("#statusFilter, #facilityFilter, #dateFilter").change(function() {
+                filterReservations();
+            });
+            
+            function filterReservations() {
+                var statusFilter = $("#statusFilter").val();
+                var facilityFilter = $("#facilityFilter").val();
+                var dateFilter = $("#dateFilter").val();
+                
+                $(".reservation-item").each(function() {
+                    var matchStatus = statusFilter === "" || $(this).data("status") === statusFilter;
+                    var matchFacility = facilityFilter === "" || $(this).data("facility") === facilityFilter;
+                    var matchDate = true;
+                    
+                    var itemDate = new Date($(this).data("date"));
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (dateFilter === "upcoming") {
+                        matchDate = itemDate >= today;
+                    } else if (dateFilter === "past") {
+                        matchDate = itemDate < today;
+                    } else if (dateFilter === "today") {
+                        matchDate = itemDate.toDateString() === today.toDateString();
+                    } else if (dateFilter === "week") {
+                        var weekStart = new Date(today);
+                        weekStart.setDate(today.getDate() - today.getDay());
+                        var weekEnd = new Date(weekStart);
+                        weekEnd.setDate(weekStart.getDate() + 6);
+                        matchDate = itemDate >= weekStart && itemDate <= weekEnd;
+                    } else if (dateFilter === "month") {
+                        matchDate = itemDate.getMonth() === today.getMonth() && 
+                                  itemDate.getFullYear() === today.getFullYear();
+                    }
+                    
+                    if (matchStatus && matchFacility && matchDate) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+                
+                // Show message if no results
+                if ($(".reservation-item:visible").length === 0) {
+                    if ($("#no-results").length === 0) {
+                        $("#reservationsList").append('<div id="no-results" class="col-12"><div class="alert alert-info">No reservations match your filter criteria.</div></div>');
+                    }
+                } else {
+                    $("#no-results").remove();
+                }
+            }
+        });
+    </script>
+}

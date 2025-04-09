@@ -1,160 +1,58 @@
 ﻿@{
-    Layout = "_UserLayout";
     ViewData["Title"] = "User Dashboard";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="container-fluid">
-    <!-- Profile Summary -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card profile-card">
-                <div class="card-body d-flex align-items-center">
-                    <img src="/images/default-profile.jpg" class="rounded-circle me-3" style="width: 64px; height: 64px;" alt="Profile Picture">
-                    <div>
-                        <h4 class="mb-0">Welcome, John Doe</h4>
-                        <p class="mb-0">House #123 | Member since 2024</p>
+<!-- Welcome Section -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="card-title">Welcome back, @User.Identity?.Name!</h2>
+        <p class="card-text">Here's what's happening at Casa Heights today.</p>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle bg-primary">
+                        <i class="fas fa-calendar text-white"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h5 class="mb-0">Upcoming Bookings</h5>
+                        <p class="text-muted mb-0">@(ViewBag.UpcomingBookingsCount ?? 0) scheduled</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Quick Actions -->
-    <div class="row mb-4 g-3">
-        <div class="col-md-3">
-            <div class="card quick-action-card">
-                <div class="card-body text-center">
-                    <i class="fas fa-file-invoice fa-2x mb-2"></i>
-                    <h5>Current Balance</h5>
-                    <h3 class="text-primary">₱5,000.00</h3>
-                    <button class="btn btn-primary btn-sm">Pay Now</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card quick-action-card">
-                <div class="card-body text-center">
-                    <i class="fas fa-calendar-alt fa-2x mb-2"></i>
-                    <h5>Facility Booking</h5>
-                    <p class="mb-2">Book amenities</p>
-                    <button class="btn btn-primary btn-sm">Reserve Now</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card quick-action-card">
-                <div class="card-body text-center">
-                    <i class="fas fa-tools fa-2x mb-2"></i>
-                    <h5>Service Request</h5>
-                    <p class="mb-2">Report an issue</p>
-                    <button class="btn btn-primary btn-sm">Submit Request</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card quick-action-card">
-                <div class="card-body text-center">
-                    <i class="fas fa-car fa-2x mb-2"></i>
-                    <h5>Visitor Pass</h5>
-                    <p class="mb-2">Register visitor</p>
-                    <button class="btn btn-primary btn-sm">Request Pass</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Announcements and Calendar -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Recent Announcements</h5>
-                </div>
-                <div class="card-body">
-                    <div class="announcement-item mb-3">
-                        <h6>Water Interruption Notice</h6>
-                        <p class="text-muted mb-1">March 25, 2024</p>
-                        <p>Scheduled water interruption from 10 AM to 2 PM for maintenance works.</p>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle bg-success">
+                        <i class="fas fa-check text-white"></i>
                     </div>
-                    <div class="announcement-item mb-3">
-                        <h6>Monthly Association Meeting</h6>
-                        <p class="text-muted mb-1">March 30, 2024</p>
-                        <p>Join us for the monthly association meeting at the clubhouse.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Upcoming Events</h5>
-                </div>
-                <div class="card-body">
-                    <div class="event-item mb-2">
-                        <small class="text-muted">Mar 25</small>
-                        <p class="mb-0">Water Maintenance</p>
-                    </div>
-                    <div class="event-item mb-2">
-                        <small class="text-muted">Mar 30</small>
-                        <p class="mb-0">Association Meeting</p>
+                    <div class="ms-3">
+                        <h5 class="mb-0">Payments</h5>
+                        <p class="text-muted mb-0">All up to date</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Service Requests and Documents -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Recent Service Requests</h5>
-                </div>
-                <div class="card-body">
-                    <div class="request-item mb-2">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6>Street Light Repair</h6>
-                                <p class="text-muted mb-0">Ticket #SR001</p>
-                            </div>
-                            <span class="badge bg-warning">In Progress</span>
-                        </div>
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle bg-warning">
+                        <i class="fas fa-bell text-white"></i>
                     </div>
-                    <div class="request-item mb-2">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6>Garbage Collection</h6>
-                                <p class="text-muted mb-0">Ticket #SR002</p>
-                            </div>
-                            <span class="badge bg-success">Completed</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Important Documents</h5>
-                </div>
-                <div class="card-body">
-                    <div class="document-item mb-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-file-pdf text-danger me-2"></i>
-                                <span>Community Guidelines</span>
-                            </div>
-                            <button class="btn btn-sm btn-outline-primary">Download</button>
-                        </div>
-                    </div>
-                    <div class="document-item mb-2">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="fas fa-file-pdf text-danger me-2"></i>
-                                <span>Monthly Newsletter</span>
-                            </div>
-                            <button class="btn btn-sm btn-outline-primary">Download</button>
-                        </div>
+                    <div class="ms-3">
+                        <h5 class="mb-0">Announcements</h5>
+                        <p class="text-muted mb-0">@(ViewBag.RecentAnnouncements?.Count ?? 0) unread</p>
                     </div>
                 </div>
             </div>
@@ -162,8 +60,152 @@
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
-    }
+<!-- Announcements -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Announcements</h5>
+                <a asp-controller="Announcements" asp-action="UserAnnouncements" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                @if (ViewBag.RecentAnnouncements == null || ViewBag.RecentAnnouncements.Count == 0)
+                {
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">No recent announcements</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var announcement in ViewBag.RecentAnnouncements)
+                        {
+                            <a asp-controller="Announcements" asp-action="UserAnnouncementDetails" asp-route-id="@announcement.Id" 
+                               class="list-group-item list-group-item-action @(announcement.IsUrgent ? "list-group-item-danger" : "")">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">@(announcement.IsUrgent ? "URGENT: " : "")@announcement.Title</h6>
+                                    <small>@announcement.PostedDate.ToString("MMM d")</small>
+                                </div>
+                                <p class="mb-1 small text-truncate">@announcement.Content</p>
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-controller="FacilityUser" asp-action="Index" class="btn btn-primary">
+                        <i class="fas fa-building me-2"></i> Browse Facilities
+                    </a>
+                    <a asp-controller="ReservationUser" asp-action="MyReservations" class="btn btn-success">
+                        <i class="fas fa-calendar me-2"></i> My Reservations
+                    </a>
+                    <a href="#" class="btn btn-info">
+                        <i class="fas fa-file-invoice me-2"></i> Make a Payment
+                    </a>
+                    <a href="#" class="btn btn-warning">
+                        <i class="fas fa-exclamation-circle me-2"></i> Report an Issue
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Facilities -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Community Facilities</h5>
+                <a asp-controller="FacilityUser" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.Facilities == null || ViewBag.Facilities.Count == 0)
+                {
+                    <div class="text-center py-3">
+                        <p class="text-muted mb-0">No facilities available</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        @foreach (var facility in ViewBag.Facilities)
+                        {
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100 facility-card">
+                                    @if (!string.IsNullOrEmpty(facility.ImageUrl))
+                                    {
+                                        <img src="@facility.ImageUrl" class="card-img-top facility-image" alt="@facility.Name">
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/default-facility.jpg" class="card-img-top facility-image" alt="Default Image">
+                                    }
+                                    <div class="card-body">
+                                        <h5 class="card-title">@facility.Name</h5>
+                                        <p class="card-text small">@(facility.Description?.Length > 60 ? facility.Description.Substring(0, 60) + "..." : facility.Description)</p>
+                                        <ul class="facility-features small">
+                                            <li><i class="fas fa-map-marker-alt"></i> @facility.Location</li>
+                                            <li><i class="fas fa-users"></i> Capacity: @facility.Capacity people</li>
+                                            <li><i class="fas fa-dollar-sign"></i> @facility.HourlyRate.ToString("C") per hour</li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer bg-white">
+                                        <div class="d-grid gap-2">
+                                            <a asp-controller="FacilityUser" asp-action="Details" asp-route-id="@facility.Id" class="btn btn-sm btn-outline-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .icon-circle {
+            height: 48px;
+            width: 48px;
+            border-radius: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-circle i {
+            font-size: 1.5rem;
+        }
+        .facility-card {
+            transition: transform 0.3s ease;
+        }
+        .facility-card:hover {
+            transform: translateY(-5px);
+        }
+        .facility-image {
+            height: 140px;
+            object-fit: cover;
+        }
+        .facility-features {
+            list-style: none;
+            padding-left: 0;
+        }
+        .facility-features li {
+            margin-bottom: 4px;
+        }
+        .facility-features li i {
+            margin-right: 8px;
+            color: #4e73df;
+        }
+    </style>
 }

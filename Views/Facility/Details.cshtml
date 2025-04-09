@@ -1,0 +1,363 @@
+@model CasaHeights.Models.Facility
+
+@{
+    ViewData["Title"] = "Facility Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Facility Details</h1>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" class="img-fluid rounded mb-3" alt="@Model.Name">
+                        }
+                        else
+                        {
+                            <img src="/images/default-facility.jpg" class="img-fluid rounded mb-3" alt="Facility image">
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <h2 class="mb-3">@Model.Name</h2>
+                        <div class="mb-3">
+                            <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                                @(Model.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </div>
+                        
+                        <p>@Model.Description</p>
+                        
+                        <div class="d-flex gap-2 mb-3">
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i> Delete
+                            </a>
+                            <a asp-controller="Reservation" asp-action="Index" asp-route-facilityId="@Model.Id" class="btn btn-info">
+                                <i class="fas fa-calendar-alt me-1"></i> View Bookings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Facility Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th style="width: 40%;">Location</th>
+                                <td>@Model.Location</td>
+                            </tr>
+                            <tr>
+                                <th>Capacity</th>
+                                <td>@Model.Capacity persons</td>
+                            </tr>
+                            @* Removed Area, Amenities, and Rules properties that don't exist *@
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Booking Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th style="width: 40%;">Hourly Rate</th>
+                                <td>@Model.HourlyRate.ToString("C")</td>
+                            </tr>
+                            <tr>
+                                <th>Opening Hours</th>
+                                <td>@DateTime.Today.Add(Model.OpeningTime).ToString("h:mm tt") - @DateTime.Today.Add(Model.ClosingTime).ToString("h:mm tt")</td>
+                            </tr>
+                            <tr>
+                                <th>Minimum Booking</th>
+                                <td>@Model.MinimumReservationHours hour(s)</td>
+                            </tr>
+                            <tr>
+                                <th>Maximum Booking</th>
+                                <td>@Model.MaximumReservationHours hour(s)</td>
+                            </tr>
+                            <tr>
+                                <th>Maintenance Day</th>
+                                <td>@(Model.MaintenanceDay.HasValue ? Model.MaintenanceDay.Value.ToString() : "None")</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Booking Statistics</h5>
+            </div>
+            <div class="card-body">
+                @{
+                    var pendingBookingsCount = ViewBag.PendingBookingsCount ?? 0;
+                    var approvedBookingsCount = ViewBag.ApprovedBookingsCount ?? 0;
+                    var totalBookingsCount = ViewBag.TotalBookingsCount ?? 0;
+                }
+                
+                <div class="list-group mb-3">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-clock text-warning me-2"></i>
+                            Pending Bookings
+                        </div>
+                        <span class="badge bg-warning text-dark rounded-pill">@pendingBookingsCount</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-check text-success me-2"></i>
+                            Approved Bookings
+                        </div>
+                        <span class="badge bg-success rounded-pill">@approvedBookingsCount</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-calendar-alt text-primary me-2"></i>
+                            Total Bookings
+                        </div>
+                        <span class="badge bg-primary rounded-pill">@totalBookingsCount</span>
+                    </div>
+                </div>
+                
+                <a asp-controller="Reservation" asp-action="Index" asp-route-facilityId="@Model.Id" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-list me-1"></i> View All Bookings
+                </a>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i> Edit Facility
+                    </a>
+                    
+                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#toggleStatusModal">
+                        @if (Model.IsActive)
+                        {
+                            <i class="fas fa-times-circle me-1"></i>
+                            <span>Deactivate Facility</span>
+                        }
+                        else
+                        {
+                            <i class="fas fa-check-circle me-1"></i>
+                            <span>Activate Facility</span>
+                        }
+                    </button>
+                    
+                    <a asp-controller="Reservation" asp-action="Calendar" asp-route-facilityId="@Model.Id" class="btn btn-outline-info">
+                        <i class="fas fa-calendar-alt me-1"></i> View Booking Calendar
+                    </a>
+                    
+                    <a href="#" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#maintenanceModal">
+                        <i class="fas fa-tools me-1"></i> Schedule Maintenance
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Recent Bookings</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (ViewBag.RecentBookings != null && ((IEnumerable<dynamic>)ViewBag.RecentBookings).Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var booking in (IEnumerable<dynamic>)ViewBag.RecentBookings)
+                        {
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@booking.UserName</strong>
+                                        <small class="d-block text-muted">@booking.Date.ToString("MMM d, yyyy")</small>
+                                        <small class="d-block">@booking.StartTime.ToString("h:mm tt") - @booking.EndTime.ToString("h:mm tt")</small>
+                                    </div>
+                                    <span class="badge @(booking.Status == "Pending" ? "bg-warning text-dark" : 
+                                                        booking.Status == "Approved" ? "bg-success" : 
+                                                        booking.Status == "Rejected" ? "bg-danger" : "bg-secondary")">
+                                        @booking.Status
+                                    </span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="p-3 text-center text-muted">
+                        <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                        <p>No recent bookings for this facility.</p>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Reservation" asp-action="Index" asp-route-facilityId="@Model.Id" class="btn btn-sm btn-outline-secondary w-100">
+                    View All Bookings
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toggle Status Modal -->
+<div class="modal fade" id="toggleStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    @(Model.IsActive ? "Deactivate" : "Activate") Facility
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Are you sure you want to @(Model.IsActive ? "deactivate" : "activate") 
+                    <strong>@Model.Name</strong>?
+                </p>
+                @if (Model.IsActive)
+                {
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <small>
+                            Deactivating this facility will make it unavailable for new bookings.
+                            Existing bookings will not be affected.
+                        </small>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>
+                            Activating this facility will make it available for bookings.
+                        </small>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="ToggleStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn @(Model.IsActive ? "btn-danger" : "btn-success")">
+                        @(Model.IsActive ? "Deactivate" : "Activate")
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Maintenance Modal -->
+<div class="modal fade" id="maintenanceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Schedule Maintenance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="ScheduleMaintenance" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    
+                    <div class="mb-3">
+                            <label for="maintenanceDay" class="form-label">Maintenance Day</label>
+                            <select name="maintenanceDay" id="maintenanceDay" class="form-select">
+                                <option value="">None (Available all days)</option>
+                                @foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+                                {
+                                    var dayValue = (int)day;
+                                    var isSelected = Model.MaintenanceDay == day;
+                                    
+                                    // Fix: Don't use C# expressions inside HTML attributes
+                                    if (isSelected)
+                                    {
+                                        <option value="@dayValue" selected>@day</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@dayValue">@day</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>
+                            The facility will be unavailable for bookings on the selected maintenance day.
+                            Existing bookings on this day will not be affected.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // If booking statistics are displayed, you might want to load them via AJAX
+            function loadBookingStats() {
+                $.ajax({
+                    url: '@Url.Action("GetFacilityStats", "Facility", new { id = Model.Id })',
+                    type: 'GET',
+                    success: function(response) {
+                        // Update the stats with the response
+                        console.log('Stats loaded successfully');
+                    },
+                    error: function(error) {
+                        console.error('Error loading booking stats', error);
+                    }
+                });
+            }
+            
+            // Uncomment this if you implement the AJAX endpoint
+            // loadBookingStats();
+        });
+    </script>
+}

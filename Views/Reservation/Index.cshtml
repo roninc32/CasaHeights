@@ -1,0 +1,114 @@
+@model IEnumerable<CasaHeights.Models.Reservation>
+@using CasaHeights.Models
+
+@{
+    ViewData["Title"] = "Facility Reservations";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Facility Reservations</h1>
+    <div>
+        <a asp-controller="Reservation" asp-action="Calendar" class="btn btn-outline-primary">
+            <i class="fas fa-calendar-alt"></i> Calendar View
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Status Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+            <a asp-action="Index" class="btn @(string.IsNullOrEmpty(ViewBag.StatusFilter) ? "btn-primary" : "btn-outline-secondary")">
+                All Reservations
+            </a>
+            <a asp-action="Index" asp-route-status="Pending" class="btn @(ViewBag.StatusFilter == "Pending" ? "btn-warning" : "btn-outline-warning")">
+                <i class="fas fa-clock me-1"></i> Pending
+            </a>
+            <a asp-action="Index" asp-route-status="Approved" class="btn @(ViewBag.StatusFilter == "Approved" ? "btn-success" : "btn-outline-success")">
+                <i class="fas fa-check me-1"></i> Approved
+            </a>
+            <a asp-action="Index" asp-route-status="Rejected" class="btn @(ViewBag.StatusFilter == "Rejected" ? "btn-danger" : "btn-outline-danger")">
+                <i class="fas fa-times me-1"></i> Rejected
+            </a>
+            <a asp-action="Index" asp-route-status="Cancelled" class="btn @(ViewBag.StatusFilter == "Cancelled" ? "btn-secondary" : "btn-outline-secondary")">
+                <i class="fas fa-ban me-1"></i> Cancelled
+            </a>
+            <a asp-action="Index" asp-route-status="Completed" class="btn @(ViewBag.StatusFilter == "Completed" ? "btn-info" : "btn-outline-info")">
+                <i class="fas fa-flag-checkered me-1"></i> Completed
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i> No reservations found matching the selected criteria.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Facility</th>
+                    <th>Reserved By</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Facility?.Name</td>
+                        <td>@item.User?.FullName</td>
+                        <td>@item.ReservationDate.ToString("MMM dd, yyyy")</td>
+                        <td>@item.StartTime.ToString("h:mm tt") - @item.EndTime.ToString("h:mm tt")</td>
+                        <td>
+                            @switch (item.Status)
+                            {
+                                case ReservationStatus.Pending:
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    break;
+                                case ReservationStatus.Approved:
+                                    <span class="badge bg-success">Approved</span>
+                                    break;
+                                case ReservationStatus.Rejected:
+                                    <span class="badge bg-danger">Rejected</span>
+                                    break;
+                                case ReservationStatus.Cancelled:
+                                    <span class="badge bg-secondary">Cancelled</span>
+                                    break;
+                                case ReservationStatus.Completed:
+                                    <span class="badge bg-info">Completed</span>
+                                    break;
+                            }
+                        </td>
+                        <td>@item.TotalAmount.ToString("C")</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

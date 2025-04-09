@@ -1,0 +1,36 @@
+@model CasaHeights.Models.Announcement
+
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";  // Use the user layout
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="UserAnnouncements">Announcements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <div class="card mb-4 @(Model.IsUrgent ? "border-danger" : "")">
+        <div class="card-header @(Model.IsUrgent ? "bg-danger text-white" : "")">
+            <h2 class="mb-0">@(Model.IsUrgent ? "URGENT: " : "")@Model.Title</h2>
+            <small>Posted on @Model.PostedDate.ToString("MMMM d, yyyy")</small>
+        </div>
+        <div class="card-body">
+            <div class="announcement-content">
+                @Html.Raw(Model.Content)
+            </div>
+        </div>
+        <div class="card-footer">
+            <a asp-action="UserAnnouncements" class="btn btn-secondary">Back to Announcements</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add any specific scripts for the announcement details page
+    </script>
+}

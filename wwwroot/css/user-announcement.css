@@ -1,0 +1,29 @@
+.announcement-card {
+    transition: transform 0.2s;
+    margin-bottom: 1.5rem;
+}
+
+.announcement-card:hover {
+    transform: translateY(-5px);
+}
+
+.announcement-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.announcement-meta {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* For urgent announcements */
+.urgent-banner {
+    background-color: #dc3545;
+    color: white;
+    padding: 0.5rem;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}

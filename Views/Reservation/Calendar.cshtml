@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Booking Calendar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
+    <style>
+        #calendar {
+            height: 700px;
+        }
+        .fc-event {
+            cursor: pointer;
+        }
+    </style>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Booking Calendar</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-list me-1"></i> List View
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: '@Url.Action("GetCalendarEvents", "Reservation")',
+                eventClick: function(info) {
+                    window.location.href = '@Url.Action("Details", "Reservation")/' + info.event.id;
+                },
+                eventTimeFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short'
+                }
+            });
+            
+            calendar.render();
+        });
+    </script>
+}

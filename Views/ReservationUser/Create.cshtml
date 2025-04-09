@@ -1,0 +1,318 @@
+@model CasaHeights.ViewModels.ReservationCreateViewModel
+
+@{
+    ViewData["Title"] = "Book Facility";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Book Facility: @Model.FacilityName</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i> @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Reservation Details</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <input type="hidden" asp-for="FacilityId" />
+                        <input type="hidden" asp-for="FacilityName" />
+                        <input type="hidden" asp-for="HourlyRate" />
+                        <input type="hidden" asp-for="MinimumHours" />
+                        <input type="hidden" asp-for="MaximumHours" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- Date Selection -->
+                        <div class="mb-4">
+                            <label asp-for="Date" class="form-label">Reservation Date</label>
+                            <input asp-for="Date" class="form-control" id="reservationDate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                            <div class="form-text">Select the date you want to book the facility</div>
+                        </div>
+
+                        <!-- Time Selection section -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Start Time</label>
+                                <div class="row g-2">
+                                    <div class="col-8">
+                                        <select asp-for="StartHour" class="form-select" id="startHour">
+                                            @for (int hour = Model.OpeningTime.Hours; hour < Model.ClosingTime.Hours; hour++)
+                                            {
+                                                <option value="@hour">@DateTime.Today.AddHours(hour).ToString("h tt")</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <select asp-for="StartMinute" class="form-select">
+                                            <option value="0">00</option>
+                                            <option value="30">30</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">End Time</label>
+                                <div class="row g-2">
+                                    <div class="col-8">
+                                        <select asp-for="EndHour" class="form-select" id="endHour">
+                                            @for (int hour = Model.OpeningTime.Hours + 1; hour <= Model.ClosingTime.Hours; hour++)
+                                            {
+                                                <option value="@hour">@DateTime.Today.AddHours(hour).ToString("h tt")</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <select asp-for="EndMinute" class="form-select">
+                                            <option value="0">00</option>
+                                            <option value="30">30</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4" id="timeSlots">
+                            <p class="text-muted">Available time slots will appear here after selecting a date.</p>
+                        </div>
+
+                        <!-- Purpose and Attendees -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <label asp-for="Purpose" class="form-label">Purpose of Reservation</label>
+                                <input asp-for="Purpose" class="form-control" placeholder="e.g., Birthday Party, Meeting, etc." />
+                                <span asp-validation-for="Purpose" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="AttendeeCount" class="form-label">Number of Attendees</label>
+                                <input asp-for="AttendeeCount" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="AttendeeCount" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Additional Notes -->
+                        <div class="mb-4">
+                            <label asp-for="Notes" class="form-label">Additional Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Any special requirements or additional information"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <!-- Price Calculation -->
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6>Pricing Information</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Hourly Rate:</span>
+                                    <span>@Model.HourlyRate.ToString("C")</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Duration:</span>
+                                    <span id="durationHours">0 hours</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total Cost:</span>
+                                    <span id="totalPrice">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-controller="FacilityUser" asp-action="Details" asp-route-id="@Model.FacilityId" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-calendar-check me-1"></i> Submit Reservation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Facility Summary -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Facility Information</h5>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" class="img-fluid rounded mb-3" alt="@Model.FacilityName">
+                    }
+                    else
+                    {
+                        <img src="/images/default-facility.jpg" class="img-fluid rounded mb-3" alt="Facility image">
+                    }
+                    
+                    <h5 class="mb-3">@Model.FacilityName</h5>
+                    
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-clock me-2 text-primary"></i>
+                            <div>
+                                <strong>Hours</strong>
+                                <p class="mb-0">@Model.FormattedOpeningTime - @Model.FormattedClosingTime</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-hourglass-half me-2 text-primary"></i>
+                            <div>
+                                <strong>Reservation Duration</strong>
+                                <p class="mb-0">
+                                    Min: @Model.MinimumHours hour(s)<br>
+                                    Max: @Model.MaximumHours hour(s)
+                                </p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-dollar-sign me-2 text-primary"></i>
+                            <div>
+                                <strong>Rate</strong>
+                                <p class="mb-0">@Model.HourlyRate.ToString("C") per hour</p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Reservations require admin approval. You'll receive a notification once your booking is confirmed.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        
+        $(document).ready(function() {
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            $('#reservationDate').attr('min', today);
+
+            // Check availability when date changes
+            $('#reservationDate').change(function() {
+                checkAvailability();
+            });
+
+            // Set default start/end times that make sense
+            const defaultStartHour = Math.max(@Model.OpeningTime.Hours, 9); // 9 AM or opening time if later
+            const defaultEndHour = Math.min(defaultStartHour + 2, @Model.ClosingTime.Hours); // 2 hours later or closing
+                
+                // Set the dropdown values
+                $('#startHour').val(defaultStartHour);
+                $('#endHour').val(defaultEndHour);
+                
+                // Update calculations
+                calculatePrice();
+            });        
+            
+
+            // Calculate price
+            function calculatePrice() {
+                const startHour = parseInt($('#startHour').val());
+                const startMinute = parseInt($('#startMinute').val());
+                const endHour = parseInt($('#endHour').val());
+                const endMinute = parseInt($('#endMinute').val());
+                
+                // Calculate duration in hours
+                let durationHours = endHour - startHour;
+                if (endMinute < startMinute) {
+                    durationHours -= 0.5;
+                } else if (endMinute > startMinute) {
+                    durationHours += 0.5;
+                }
+                
+                // Update duration display
+                $('#durationHours').text(durationHours + ' hour(s)');
+                
+                // Calculate price
+                const hourlyRate = @Model.HourlyRate;
+                const totalPrice = hourlyRate * durationHours;
+                $('#totalPrice').text('$' + totalPrice.toFixed(2));
+            }
+
+            // Check facility availability via AJAX
+            function checkAvailability() {
+                const selectedDate = $('#reservationDate').val();
+                if (!selectedDate) return;
+                
+                $('#timeSlots').html(`
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Checking availability...</p>
+                    </div>
+                `);
+                
+                $.ajax({
+                    url: '@Url.Action("CheckAvailability", "ReservationUser")',
+                    type: 'GET',
+                    data: {
+                        facilityId: @Model.FacilityId,
+                        date: selectedDate
+                    },
+                    success: function(response) {
+                        if (!response.success) {
+                            $('#timeSlots').html(`
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i> ${response.message}
+                                </div>
+                            `);
+                            return;
+                        }
+                        
+                        // Display time slots
+                        let timeSlotsHtml = `<h6 class="mb-3">Available Time Slots</h6>`;
+                        timeSlotsHtml += `<div class="row g-2">`;
+                        
+                        response.slots.forEach(slot => {
+                            const bgClass = slot.available ? 'bg-success bg-opacity-10' : 'bg-danger bg-opacity-10';
+                            const textClass = slot.available ? 'text-success' : 'text-danger';
+                            const statusText = slot.available ? 'Available' : 'Booked';
+                            
+                            timeSlotsHtml += `
+                                <div class="col-md-3 col-6 mb-2">
+                                    <div class="border rounded p-2 text-center ${bgClass}">
+                                        <small class="d-block">${slot.start} - ${slot.end}</small>
+                                        <span class="badge ${slot.available ? 'bg-success' : 'bg-danger'}">${statusText}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        timeSlotsHtml += `</div>`;
+                        $('#timeSlots').html(timeSlotsHtml);
+                        
+                        // Calculate initial price
+                        calculatePrice();
+                    },
+                    error: function(xhr, status, error) {
+                        $('#timeSlots').html(`
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle me-2"></i> Error checking availability: ${error}
+                            </div>
+                        `);
+                    }
+                });
+            }
+
+            // Initialize with default values
+            calculatePrice();
+        });
+    </script>
+}
