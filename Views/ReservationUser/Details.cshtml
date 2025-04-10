@@ -1,0 +1,203 @@
+@model CasaHeights.Models.Reservation
+
+@{
+    ViewData["Title"] = "Reservation Details";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Reservation Details</h2>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center
+                            @(Model.Status == ReservationStatus.Approved ? "bg-success bg-opacity-25" : 
+                              Model.Status == ReservationStatus.Pending ? "bg-warning bg-opacity-25" : 
+                              Model.Status == ReservationStatus.Rejected ? "bg-danger bg-opacity-25" : "bg-secondary bg-opacity-25")">
+                    <h5 class="mb-0">@Model.Facility.Name</h5>
+                    <span class="badge
+                               @(Model.Status == ReservationStatus.Approved ? "bg-success" : 
+                                 Model.Status == ReservationStatus.Pending ? "bg-warning text-dark" : 
+                                 Model.Status == ReservationStatus.Rejected ? "bg-danger" : "bg-secondary")">
+                        @Model.Status
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Reservation Information</h6>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th class="bg-light" style="width: 40%;">Date</th>
+                                    <td>@Model.ReservationDate.ToString("dddd, MMMM d, yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Time</th>
+                                    <td>@Model.StartTime.ToString("h:mm tt") - @Model.EndTime.ToString("h:mm tt")</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Duration</th>
+                                    <td>@Model.DurationHours hours</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Purpose</th>
+                                    <td>@Model.Purpose</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Attendees</th>
+                                    <td>@Model.AttendeeCount</td>
+                                </tr>
+                                @if (!string.IsNullOrEmpty(Model.SpecialRequests))
+                                {
+                                    <tr>
+                                        <th class="bg-light">Notes</th>
+                                        <td>@Model.SpecialRequests</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Status Information</h6>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th class="bg-light" style="width: 40%;">Status</th>
+                                    <td>
+                                        <span class="badge
+                                               @(Model.Status == ReservationStatus.Approved ? "bg-success" : 
+                                                 Model.Status == ReservationStatus.Pending ? "bg-warning text-dark" : 
+                                                 Model.Status == ReservationStatus.Rejected ? "bg-danger" : "bg-secondary")">
+                                            @Model.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Total Cost</th>
+                                    <td>@Model.TotalAmount.ToString("C")</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">Created On</th>
+                                    <td>@Model.CreatedDate.ToString("MMM d, yyyy h:mm tt")</td>
+                                </tr>
+                                @if (Model.Status == ReservationStatus.Approved && Model.ApprovalDate.HasValue)
+                                {
+                                    <tr>
+                                        <th class="bg-light">Approved On</th>
+                                        <td>@Model.ApprovalDate.Value.ToString("MMM d, yyyy h:mm tt")</td>
+                                    </tr>
+                                }
+                                @if (Model.Status == ReservationStatus.Rejected && Model.RejectionDate.HasValue)
+                                {
+                                    <tr>
+                                        <th class="bg-light">Rejected On</th>
+                                        <td>@Model.RejectionDate.Value.ToString("MMM d, yyyy h:mm tt")</td>
+                                    </tr>
+                                    @if (!string.IsNullOrEmpty(Model.RejectionReason))
+                                    {
+                                        <tr>
+                                            <th class="bg-light">Rejection Reason</th>
+                                            <td>@Model.RejectionReason</td>
+                                        </tr>
+                                    }
+                                }
+                                @if (Model.Status == ReservationStatus.Cancelled && Model.CancellationDate.HasValue)
+                                {
+                                    <tr>
+                                        <th class="bg-light">Cancelled On</th>
+                                        <td>@Model.CancellationDate.Value.ToString("MMM d, yyyy h:mm tt")</td>
+                                    </tr>
+                                    @if (!string.IsNullOrEmpty(Model.CancellationReason))
+                                    {
+                                        <tr>
+                                            <th class="bg-light">Cancellation Reason</th>
+                                            <td>@Model.CancellationReason</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="MyReservations" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to My Reservations
+                        </a>
+                        
+                        @if ((Model.Status == ReservationStatus.Pending || Model.Status == ReservationStatus.Approved) &&
+                             Model.StartTime > DateTime.Now.AddHours(24))
+                        {
+                            <a asp-action="Cancel" asp-route-id="@Model.Id" class="btn btn-danger">
+                                <i class="fas fa-times me-1"></i> Cancel Reservation
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Facility Information</h5>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.Facility.ImageUrl))
+                    {
+                        <img src="@Model.Facility.ImageUrl" class="img-fluid rounded mb-3" alt="@Model.Facility.Name">
+                    }
+                    else
+                    {
+                        <img src="/images/default-facility.jpg" class="img-fluid rounded mb-3" alt="Facility image">
+                    }
+                    
+                    <h5 class="mb-3">@Model.Facility.Name</h5>
+                    <p>@Model.Facility.Description</p>
+                    
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                            <div>
+                                <strong>Location</strong>
+                                <p class="mb-0">@Model.Facility.Location</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-clock me-2 text-primary"></i>
+                            <div>
+                                <strong>Hours</strong>
+                                <p class="mb-0">@DateTime.Today.Add(Model.Facility.OpeningTime).ToString("h:mm tt") - @DateTime.Today.Add(Model.Facility.ClosingTime).ToString("h:mm tt")</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-dollar-sign me-2 text-primary"></i>
+                            <div>
+                                <strong>Rate</strong>
+                                <p class="mb-0">@Model.Facility.HourlyRate.ToString("C") per hour</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="FacilityUser" asp-action="Details" asp-route-id="@Model.FacilityId" class="btn btn-primary btn-sm">
+                        <i class="fas fa-info-circle me-1"></i> View Facility Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusBadgeClass(ReservationStatus status)
+    {
+        return status switch
+        {
+            ReservationStatus.Approved => "bg-success",
+            ReservationStatus.Pending => "bg-warning text-dark",
+            ReservationStatus.Rejected => "bg-danger",
+            ReservationStatus.Cancelled => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+}

@@ -6,8 +6,11 @@
     <title>@ViewData["Title"] - Casa Heights</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/user-announcements.css" />
     <link rel="stylesheet" href="~/css/user-dashboard.css" />
+    <link rel="stylesheet" href="~/css/user-facility.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="user-dashboard">
     <div class="d-flex">
@@ -19,13 +22,48 @@
                 <p class="text-muted">User Dashboard</p>
             </div>
             <nav>
-                <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="#"><i class="fas fa-file-invoice"></i> Payments</a>
-                <a href="#"><i class="fas fa-calendar"></i> Bookings</a>
-                <a href="#"><i class="fas fa-tools"></i> Services</a>
-                <a href="#"><i class="fas fa-bell"></i> Announcements</a>
-                <a href="#"><i class="fas fa-file"></i> Documents</a>
-                <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="User" class="nav-link">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Announcements" asp-action="UserAnnouncements" class="nav-link">
+                            <i class="fas fa-bullhorn"></i> Announcements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="FacilityUser" asp-action="Index" class="nav-link">
+                            <i class="fas fa-building"></i> Facilities
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="ReservationUser" asp-action="MyReservations" class="nav-link">
+                            <i class="fas fa-calendar-alt"></i> My Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-file-invoice"></i> Payments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-tools"></i> Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-file"></i> Documents
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
             </nav>
         </div>
 
@@ -40,22 +78,35 @@
                                 <i class="fas fa-bell"></i>
                                 <span class="badge bg-danger">3</span>
                             </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <h6 class="dropdown-header">Notifications</h6>
+                                <a class="dropdown-item" href="#">New announcement posted</a>
+                                <a class="dropdown-item" href="#">Your facility booking was approved</a>
+                                <a class="dropdown-item" href="#">Maintenance scheduled</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-center small" href="#">View all notifications</a>
+                            </div>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 <img src="/images/default-profile.jpg" class="rounded-circle" width="32" height="32" alt="Profile">
+                                <span class="ms-2">@User.Identity?.Name</span>
                             </a>
-                            <form asp-controller="Account" asp-action="Logout" method="post">
-                                        <button type="submit" class="dropdown-item">Logout</button>
-                            </form>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="#">My Profile</a>
+                                <a class="dropdown-item" href="#">Account Settings</a>
+                                <div class="dropdown-divider"></div>
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </div>
                         </li>
-                        
                     </ul>
                 </div>
             </nav>
 
             <!-- Page Content -->
-            <div class="content">
+            <div class="content p-4">
                 @RenderBody()
             </div>
         </div>

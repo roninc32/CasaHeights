@@ -1,0 +1,88 @@
+@model IEnumerable<CasaHeights.Models.Facility>
+
+@{
+    ViewData["Title"] = "Community Facilities";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">Community Facilities</h1>
+    
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No facilities are currently available.
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var facility in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm facility-card">
+                        @if (!string.IsNullOrEmpty(facility.ImageUrl))
+                        {
+                            <img src="@facility.ImageUrl" class="card-img-top facility-image" alt="@facility.Name">
+                        }
+                        else
+                        {
+                            <img src="/images/default-facility.jpg" class="card-img-top facility-image" alt="Default facility image">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@facility.Name</h5>
+                            <p class="card-text">@(facility.Description?.Length > 100 ? facility.Description.Substring(0, 100) + "..." : facility.Description)</p>
+                            
+                            <ul class="facility-features">
+                                <li><i class="fas fa-map-marker-alt"></i> @facility.Location</li>
+                                <li><i class="fas fa-users"></i> Capacity: @facility.Capacity people</li>
+                                <li><i class="fas fa-clock"></i> @DateTime.Today.Add(facility.OpeningTime).ToString("h:mm tt") - @DateTime.Today.Add(facility.ClosingTime).ToString("h:mm tt")</li>
+                                <li><i class="fas fa-money-bill-wave"></i> @facility.HourlyRate.ToString("C") per hour</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-grid gap-2">
+                                <a asp-action="Details" asp-route-id="@facility.Id" class="btn btn-primary">
+                                    <i class="fas fa-info-circle me-1"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<style>
+    .facility-card {
+        transition: transform 0.3s ease;
+    }
+    
+    .facility-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .facility-image {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .facility-features {
+        list-style: none;
+        padding-left: 0;
+    }
+    
+    .facility-features li {
+        margin-bottom: 8px;
+    }
+    
+    .facility-features li i {
+        margin-right: 10px;
+        color: #007bff;
+        width: 16px;
+    }
+</style>

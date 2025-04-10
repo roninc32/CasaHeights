@@ -1,0 +1,60 @@
+/* Reservation Management Styles */
+
+/* Status badge styling */
+.status-badge {
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+}
+
+/* Reservation card styling */
+.reservation-card {
+    transition: all 0.2s ease;
+}
+
+.reservation-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Status background colors */
+.status-pending {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: #ffc107;
+}
+
+.status-approved {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: #28a745;
+}
+
+.status-rejected {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: #dc3545;
+}
+
+.status-cancelled {
+    background-color: rgba(108, 117, 125, 0.1);
+    border-color: #6c757d;
+}
+
+.status-completed {
+    background-color: rgba(23, 162, 184, 0.1);
+    border-color: #17a2b8;
+}
+
+/* Calendar event styling */
+.fc-event {
+    border-radius: 3px;
+    font-size: 0.85rem;
+}
+
+.fc-event:hover {
+    filter: brightness(90%);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .action-buttons .btn {
+        padding: .25rem .5rem;
+        font-size: .75rem;
+    }
+}

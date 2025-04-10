@@ -1,0 +1,58 @@
+@model CasaHeights.Models.Announcement
+
+@{
+    ViewData["Title"] = "Create Announcement";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Create New Announcement</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="Content" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="ExpiryDate" class="control-label">Active Until</label>
+                <input asp-for="ExpiryDate" class="form-control" type="date" value="@DateTime.Now.AddMonths(1).ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input asp-for="IsUrgent" class="form-check-input" />
+                <label asp-for="IsUrgent" class="form-check-label">Mark as Urgent</label>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input asp-for="SendEmail" class="form-check-input" />
+                <label asp-for="SendEmail" class="form-check-label">Send Email Notification</label>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input asp-for="SendSMS" class="form-check-input" />
+                <label asp-for="SendSMS" class="form-check-label">Send SMS Notification</label>
+            </div>
+            
+            <div class="form-group mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

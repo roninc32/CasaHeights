@@ -72,6 +72,7 @@ builder.Services.AddAuthorization(options =>
 
 // Register SeedService
 builder.Services.AddScoped<SeedService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 

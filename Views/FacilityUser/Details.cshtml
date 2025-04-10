@@ -1,0 +1,227 @@
+@model CasaHeights.Models.Facility
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Facilities</a></li>
+            <li class="breadcrumb-item active">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title mb-4">@Model.Name</h1>
+                    
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" class="img-fluid rounded mb-4" alt="@Model.Name">
+                    }
+                    else
+                    {
+                        <img src="/images/default-facility.jpg" class="img-fluid rounded mb-4" alt="Default Image">
+                    }
+                    
+                    <h5 class="mb-3">About this facility</h5>
+                    <p>@Model.Description</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Facility Details</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex">
+                                    <i class="fas fa-map-marker-alt me-3 text-primary"></i>
+                                    <div>
+                                        <strong>Location</strong>
+                                        <p class="mb-0">@Model.Location</p>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex">
+                                    <i class="fas fa-users me-3 text-primary"></i>
+                                    <div>
+                                        <strong>Capacity</strong>
+                                        <p class="mb-0">@Model.Capacity people</p>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex">
+                                    <i class="fas fa-dollar-sign me-3 text-primary"></i>
+                                    <div>
+                                        <strong>Rate</strong>
+                                        <p class="mb-0">@Model.HourlyRate.ToString("C") per hour</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Booking Information</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex">
+                                    <i class="fas fa-clock me-3 text-primary"></i>
+                                    <div>
+                                        <strong>Operating Hours</strong>
+                                        <p class="mb-0">@DateTime.Today.Add(Model.OpeningTime).ToString("h:mm tt") - @DateTime.Today.Add(Model.ClosingTime).ToString("h:mm tt")</p>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex">
+                                    <i class="fas fa-hourglass-half me-3 text-primary"></i>
+                                    <div>
+                                        <strong>Reservation Duration</strong>
+                                        <p class="mb-0">
+                                            Minimum: @Model.MinimumReservationHours hour(s)<br>
+                                            Maximum: @Model.MaximumReservationHours hour(s)
+                                        </p>
+                                    </div>
+                                </li>
+                                @if (Model.MaintenanceDay.HasValue)
+                                {
+                                    <li class="list-group-item d-flex">
+                                        <i class="fas fa-tools me-3 text-warning"></i>
+                                        <div>
+                                            <strong>Maintenance Day</strong>
+                                            <p class="mb-0">Every @Model.MaintenanceDay</p>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a asp-controller="ReservationUser" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-success">
+                        <i class="fas fa-calendar-plus me-1"></i> Book This Facility
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Availability Checker -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Check Availability</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="availabilityDate" class="form-label">Select Date</label>
+                        <input type="date" id="availabilityDate" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div id="availabilityResults">
+                        <p class="text-muted text-center">
+                            <i class="fas fa-calendar-day fa-2x mb-2"></i><br>
+                            Select a date to check facility availability
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            $('#availabilityDate').attr('min', today);
+            
+            // Check availability when date changes
+            $('#availabilityDate').change(function() {
+                var selectedDate = $(this).val();
+                if (!selectedDate) return;
+                
+                $('#availabilityResults').html(`
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Checking availability...</p>
+                    </div>
+                `);
+                
+                $.ajax({
+                    url: '@Url.Action("CheckAvailability")',
+                    type: 'GET',
+                    data: {
+                        facilityId: @Model.Id,
+                        date: selectedDate
+                    },
+                    success: function(response) {
+                        if (!response.success) {
+                            $('#availabilityResults').html(`
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    ${response.message}
+                                </div>
+                            `);
+                            return;
+                        }
+                        
+                        const slots = response.slots;
+                        let timeSlotsHtml = `
+                            <div class="mt-3">
+                                <h6>Available Time Slots</h6>
+                                <div class="row g-2">
+                        `;
+                        
+                        if (slots.length === 0) {
+                            timeSlotsHtml += `
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        No time slots available on this date.
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            slots.forEach(slot => {
+                                const bgClass = slot.available ? 'bg-success bg-opacity-25' : 'bg-danger bg-opacity-25';
+                                const textClass = slot.available ? 'text-success' : 'text-danger';
+                                const statusText = slot.available ? 'Available' : 'Booked';
+                                
+                                timeSlotsHtml += `
+                                    <div class="col-6">
+                                        <div class="card ${bgClass} border-0 mb-2">
+                                            <div class="card-body p-2 text-center">
+                                                <p class="mb-1 fw-bold">${slot.start} - ${slot.end}</p>
+                                                <span class="badge ${slot.available ? 'bg-success' : 'bg-danger'}">${statusText}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                        
+                        timeSlotsHtml += `
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 text-center">
+                                <a href="@Url.Action("Create", "ReservationUser", new { id = Model.Id })?date=${selectedDate}" class="btn btn-primary">
+                                    Book This Facility
+                                </a>
+                            </div>
+                        `;
+                        
+                        $('#availabilityResults').html(timeSlotsHtml);
+                    },
+                    error: function(xhr, status, error) {
+                        $('#availabilityResults').html(`
+                            <div class="alert alert-danger" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                Error checking availability: ${error}
+                            </div>
+                        `);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,296 @@
+@model CasaHeights.Models.Reservation
+@using CasaHeights.Models
+
+@{
+    ViewData["Title"] = "Reservation Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Reservation Details</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to List
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center 
+                          @(Model.Status == ReservationStatus.Approved ? "bg-success bg-opacity-25" : 
+                             Model.Status == ReservationStatus.Pending ? "bg-warning bg-opacity-25" : 
+                             Model.Status == ReservationStatus.Rejected ? "bg-danger bg-opacity-25" : 
+                             Model.Status == ReservationStatus.Cancelled ? "bg-secondary bg-opacity-25" : 
+                             "bg-info bg-opacity-25")">
+                
+                <h5 class="mb-0">
+                    Reservation #@Model.Id - @Model.Facility.Name
+                </h5>
+                <span class="badge fs-6 
+                            @(Model.Status == ReservationStatus.Approved ? "bg-success" : 
+                               Model.Status == ReservationStatus.Pending ? "bg-warning text-dark" : 
+                               Model.Status == ReservationStatus.Rejected ? "bg-danger" : 
+                               Model.Status == ReservationStatus.Cancelled ? "bg-secondary" : 
+                               "bg-info")">
+                    @Model.Status
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Reservation Information</h6>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th class="table-light" style="width: 40%;">Date</th>
+                                <td>@Model.ReservationDate.ToString("dddd, MMMM d, yyyy")</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Time</th>
+                                <td>@Model.StartTime.ToString("h:mm tt") - @Model.EndTime.ToString("h:mm tt")</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Duration</th>
+                                <td>@((Model.EndTime - Model.StartTime).TotalHours) hours</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Created On</th>
+                                <td>@Model.CreatedDate.ToString("MMM d, yyyy h:mm tt")</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Purpose</th>
+                                <td>@Model.Purpose</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Attendees</th>
+                                <td>@Model.AttendeeCount people</td>
+                            </tr>
+                            @if (!string.IsNullOrEmpty(Model.SpecialRequests))
+                            {
+                                <tr>
+                                    <th class="table-light">Special Requests</th>
+                                    <td>@Model.SpecialRequests</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="mb-3">User Information</h6>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th class="table-light" style="width: 40%;">Name</th>
+                                <td>@Model.User.FullName</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Email</th>
+                                <td>@Model.User.Email</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Phone</th>
+                                <td>@Model.User.PhoneNumber</td>
+                            </tr>
+                        </table>
+                        
+                        <h6 class="mb-3 mt-4">Status Information</h6>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th class="table-light" style="width: 40%;">Total Amount</th>
+                                <td>@Model.TotalAmount.ToString("C")</td>
+                            </tr>
+                            <tr>
+                                <th class="table-light">Payment Status</th>
+                                <td>
+                                    @(Model.IsPaid 
+                                      ? $"<span class='badge bg-success'>Paid</span> on {Model.PaymentDate?.ToString("MMM d, yyyy")}" 
+                                      : "<span class='badge bg-danger'>Unpaid</span>")
+                                </td>
+                            </tr>
+                            @if (Model.Status == ReservationStatus.Approved && Model.ApprovalDate.HasValue)
+                            {
+                                <tr>
+                                    <th class="table-light">Approved On</th>
+                                    <td>@Model.ApprovalDate.Value.ToString("MMM d, yyyy h:mm tt")</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Approved By</th>
+                                    <td>@(Model.ProcessedBy?.FullName ?? "System")</td>
+                                </tr>
+                                @if (!string.IsNullOrEmpty(Model.AdminComments))
+                                {
+                                    <tr>
+                                        <th class="table-light">Admin Comments</th>
+                                        <td>@Model.AdminComments</td>
+                                    </tr>
+                                }
+                            }
+                            @if (Model.Status == ReservationStatus.Rejected && Model.RejectionDate.HasValue)
+                            {
+                                <tr>
+                                    <th class="table-light">Rejected On</th>
+                                    <td>@Model.RejectionDate.Value.ToString("MMM d, yyyy h:mm tt")</td>
+                                </tr>
+                                <tr>
+                                    <th class="table-light">Rejected By</th>
+                                    <td>@(Model.ProcessedBy?.FullName ?? "System")</td>
+                                </tr>
+                                @if (!string.IsNullOrEmpty(Model.RejectionReason))
+                                {
+                                    <tr>
+                                        <th class="table-light">Rejection Reason</th>
+                                        <td>@Model.RejectionReason</td>
+                                    </tr>
+                                }
+                            }
+                            @if (Model.Status == ReservationStatus.Cancelled && Model.CancellationDate.HasValue)
+                            {
+                                <tr>
+                                    <th class="table-light">Cancelled On</th>
+                                    <td>@Model.CancellationDate.Value.ToString("MMM d, yyyy h:mm tt")</td>
+                                </tr>
+                                @if (!string.IsNullOrEmpty(Model.CancellationReason))
+                                {
+                                    <tr>
+                                        <th class="table-light">Cancellation Reason</th>
+                                        <td>@Model.CancellationReason</td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            @if (Model.Status == ReservationStatus.Pending)
+            {
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form asp-action="Approve" method="post">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <div class="mb-3">
+                                    <label for="comments" class="form-label">Comments (Optional)</label>
+                                    <textarea name="comments" id="comments" class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-check me-1"></i> Approve Reservation
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form asp-action="Reject" method="post">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <div class="mb-3">
+                                    <label for="rejectionReason" class="form-label">Reason for Rejection</label>
+                                    <textarea name="rejectionReason" id="rejectionReason" class="form-control" rows="2" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to reject this reservation?')">
+                                    <i class="fas fa-times me-1"></i> Reject Reservation
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Facility Information</h5>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Model.Facility.ImageUrl))
+                {
+                    <img src="@Model.Facility.ImageUrl" class="img-fluid rounded mb-3" alt="@Model.Facility.Name">
+                }
+                else
+                {
+                    <img src="/images/default-facility.jpg" class="img-fluid rounded mb-3" alt="Facility image">
+                }
+                
+                <h5 class="mb-3">@Model.Facility.Name</h5>
+                <p>@Model.Facility.Description</p>
+                
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                        <div>
+                            <strong>Location</strong>
+                            <p class="mb-0">@Model.Facility.Location</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-clock me-2 text-primary"></i>
+                        <div>
+                            <strong>Hours</strong>
+                            <p class="mb-0">@DateTime.Today.Add(Model.Facility.OpeningTime).ToString("h:mm tt") - @DateTime.Today.Add(Model.Facility.ClosingTime).ToString("h:mm tt")</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-dollar-sign me-2 text-primary"></i>
+                        <div>
+                            <strong>Rate</strong>
+                            <p class="mb-0">@Model.Facility.HourlyRate.ToString("C") per hour</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Facility" asp-action="Details" asp-route-id="@Model.FacilityId" class="btn btn-primary">
+                    <i class="fas fa-info-circle me-1"></i> View Facility Details
+                </a>
+            </div>
+        </div>
+        
+        @if (Model.Status == ReservationStatus.Approved && !Model.IsPaid)
+        {
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Payment Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="RecordPayment" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        <div class="mb-3">
+                            <label for="paymentMethod" class="form-label">Payment Method</label>
+                            <select name="paymentMethod" id="paymentMethod" class="form-select" required>
+                                <option value="">Select payment method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentReference" class="form-label">Reference/Transaction ID</label>
+                            <input type="text" name="paymentReference" id="paymentReference" class="form-control" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentAmount" class="form-label">Amount Paid</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" name="paymentAmount" id="paymentAmount" class="form-control" value="@Model.TotalAmount" required />
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fas fa-money-bill-wave me-1"></i> Record Payment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>

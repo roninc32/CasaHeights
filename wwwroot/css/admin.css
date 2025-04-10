@@ -253,6 +253,63 @@
     border-color: var(--secondary-color);
 }
 
+/* Add these styles to your existing admin.css file */
+
+/* Facility management styles */
+.facility-card img {
+    max-height: 200px;
+    object-fit: cover;
+}
+
+.reservation-status-pill {
+    border-radius: 50px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Calendar styles */
+.fc-header-toolbar {
+    margin-bottom: 1.5em !important;
+}
+
+.fc-event {
+    border: none;
+    padding: 2px 5px;
+    font-size: 0.85em;
+    cursor: pointer;
+}
+
+.fc-day-today {
+    background-color: rgba(78, 115, 223, 0.05) !important;
+}
+
+.fc-col-header-cell {
+    background-color: #f8f9fc;
+    font-weight: 600;
+}
+
+/* Status indicator colors */
+.status-pending {
+    color: #f6c23e;
+}
+
+.status-approved {
+    color: #1cc88a;
+}
+
+.status-rejected {
+    color: #e74a3b;
+}
+
+.status-cancelled {
+    color: #858796;
+}
+
+.status-completed {
+    color: #4e73df;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     #sidebar {

@@ -1,0 +1,73 @@
+@model CasaHeights.Models.Facility
+
+@{
+    ViewData["Title"] = "Delete Facility";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h3 class="card-title">Confirm Delete</h3>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i> Are you sure you want to delete this facility? This action cannot be undone.
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded mb-3" />
+                }
+                else
+                {
+                    <div class="bg-light text-center py-5 rounded mb-3">
+                        <i class="fas fa-image fa-4x text-muted"></i>
+                    </div>
+                }
+            </div>
+            <div class="col-md-8">
+                <h4>@Model.Name</h4>
+                <p>@Model.Description</p>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Location</dt>
+                    <dd class="col-sm-8">@Model.Location</dd>
+
+                    <dt class="col-sm-4">Capacity</dt>
+                    <dd class="col-sm-8">@Model.Capacity people</dd>
+
+                    <dt class="col-sm-4">Hours</dt>
+                    <dd class="col-sm-8">@Model.OpeningTime.ToString(@"hh\:mm") - @Model.ClosingTime.ToString(@"hh\:mm")</dd>
+
+                    <dt class="col-sm-4">Hourly Rate</dt>
+                    <dd class="col-sm-8">@Model.HourlyRate.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactive</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt me-2"></i> Delete
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-times me-2"></i> Cancel
+            </a>
+        </form>
+    </div>
+</div>

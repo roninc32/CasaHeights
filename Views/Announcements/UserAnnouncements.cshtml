@@ -1,0 +1,61 @@
+@model IEnumerable<CasaHeights.Models.Announcement>
+
+@{
+    ViewData["Title"] = "Community Announcements";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";  // Use the user layout
+}
+
+<div class="container py-4">
+    <h1 class="mb-4">Community Announcements</h1>
+
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    There are currently no active announcements.
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Urgent announcements at the top -->
+            @foreach (var item in Model.Where(a => a.IsUrgent))
+            {
+                <div class="col-12 mb-4">
+                    <div class="card border-danger">
+                        <div class="card-header bg-danger text-white d-flex justify-content-between">
+                            <h5 class="mb-0">URGENT: @item.Title</h5>
+                            <small>Posted: @item.PostedDate.ToShortDateString()</small>
+                        </div>
+                        <div class="card-body">
+                            <p>@Html.Raw(item.Content)</p>
+                        </div>
+                        <div class="card-footer text-end">
+                            <a asp-action="UserAnnouncementDetails" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Regular announcements -->
+            @foreach (var item in Model.Where(a => !a.IsUrgent))
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header d-flex justify-content-between">
+                            <h5 class="mb-0">@item.Title</h5>
+                            <small>@item.PostedDate.ToShortDateString()</small>
+                        </div>
+                        <div class="card-body">
+                            <p>@Html.Raw(item.Content.Length > 150 ? item.Content.Substring(0, 150) + "..." : item.Content)</p>
+                        </div>
+                        <div class="card-footer text-end bg-white">
+                            <a asp-action="UserAnnouncementDetails" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

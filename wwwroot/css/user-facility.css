@@ -1,0 +1,169 @@
+/* Facility Cards */
+.facility-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.facility-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.facility-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.facility-features {
+    list-style: none;
+    padding-left: 0;
+}
+
+.facility-features li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.facility-features li i {
+    margin-right: 10px;
+    color: #007bff;
+    width: 20px;
+    text-align: center;
+}
+
+/* Time Slots */
+.time-slot {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.time-slot:hover {
+    background-color: #f8f9fa;
+}
+
+.time-slot.selected {
+    background-color: #007bff;
+    color: white;
+}
+
+.time-slot.unavailable {
+    background-color: #f8d7da;
+    color: #721c24;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Booking Form */
+.booking-section {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.booking-section h4 {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 10px;
+}
+
+.booking-summary {
+    background-color: #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.booking-instructions {
+    background-color: #e9f7fe;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.booking-instructions i {
+    color: #3498db;
+}
+
+/* Pricing section */
+.price-calculation {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #dee2e6;
+}
+
+.price-total {
+    font-weight: bold;
+    font-size: 1.1em;
+    border-top: 2px solid #dee2e6;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+/* Reservation Cards */
+.calendar-icon {
+    width: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.calendar-month {
+    background-color: #dc3545;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    padding: 2px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.calendar-day {
+    background-color: white;
+    color: #333;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 5px;
+}
+
+/* Status badges */
+.badge.bg-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge.bg-approved {
+    background-color: #28a745;
+}
+
+.badge.bg-rejected {
+    background-color: #dc3545;
+}
+
+.badge.bg-cancelled {
+    background-color: #6c757d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .booking-section {
+        padding: 15px;
+    }
+    
+    .calendar-icon {
+        width: 50px;
+    }
+    
+    .calendar-day {
+        font-size: 1.2rem;
+    }
+}
