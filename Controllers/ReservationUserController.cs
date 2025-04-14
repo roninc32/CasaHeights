@@ -27,13 +27,26 @@ namespace CasaHeights.Controllers
         // GET: ReservationUser/MyReservations
         public async Task<IActionResult> MyReservations()
         {
+            // Check for success message in session as a backup
+            if (HttpContext.Session.TryGetValue("LastBookingSuccess", out byte[] messageBytes) && 
+                TempData["SuccessMessage"] == null)
+            {
+                string message = System.Text.Encoding.UTF8.GetString(messageBytes);
+                TempData["SuccessMessage"] = message;
+                // Clear the session variable after using it
+                HttpContext.Session.Remove("LastBookingSuccess");
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            System.Diagnostics.Debug.WriteLine($"Loading reservations for user ID: {userId}");
 
             var reservations = await _context.Reservations
                 .Include(r => r.Facility)
                 .Where(r => r.UserId == userId)
                 .OrderByDescending(r => r.ReservationDate)
                 .ToListAsync();
+                
+            System.Diagnostics.Debug.WriteLine($"Found {reservations.Count} reservations for user");
 
             return View(reservations);
         }
@@ -59,39 +72,35 @@ namespace CasaHeights.Controllers
             return View(reservation);
         }
 
-        // GET: ReservationUser/Create
-        public async Task<IActionResult> Create(int? id, DateTime? date)
+        // Controllers/ReservationUserController.cs
+        [HttpGet]
+        public async Task<IActionResult> Create(int? id)
         {
             if (id == null)
             {
-                return RedirectToAction("Index", "FacilityUser");
+                return NotFound();
             }
 
-            var facility = await _context.Facilities.FindAsync(id);
-            if (facility == null || !facility.IsActive)
+            var facility = await _context.Facilities
+                .FirstOrDefaultAsync(f => f.Id == id && f.IsActive);
+
+            if (facility == null)
             {
-                TempData["ErrorMessage"] = "Facility not found or is currently unavailable.";
-                return RedirectToAction("Index", "FacilityUser");
+                return NotFound();
             }
 
             var viewModel = new ReservationCreateViewModel
             {
                 FacilityId = facility.Id,
                 FacilityName = facility.Name,
+                ImageUrl = facility.ImageUrl,
                 HourlyRate = facility.HourlyRate,
                 MinimumHours = facility.MinimumReservationHours,
                 MaximumHours = facility.MaximumReservationHours,
-                OpeningTime = facility.OpeningTime,
-                ClosingTime = facility.ClosingTime,
-                MaintenanceDay = facility.MaintenanceDay,
-                ImageUrl = facility.ImageUrl,
-                Date = date ?? DateTime.Today.AddDays(1),
-                // Set default start time to facility opening time
-                StartHour = facility.OpeningTime.Hours,
-                StartMinute = 0,
-                // Set default end time to 1 hour after opening
-                EndHour = facility.OpeningTime.Hours + 1,
-                EndMinute = 0
+                // Ensure valid TimeSpan values
+                OpeningTime = facility.OpeningTime != default ? facility.OpeningTime : new TimeSpan(8, 0, 0),
+                ClosingTime = facility.ClosingTime != default ? facility.ClosingTime : new TimeSpan(22, 0, 0),
+                Date = DateTime.Today.AddDays(1)
             };
 
             return View(viewModel);
@@ -102,13 +111,40 @@ namespace CasaHeights.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ReservationCreateViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            // Debug logging
+            System.Diagnostics.Debug.WriteLine($"Received booking form submission:");
+            System.Diagnostics.Debug.WriteLine($"FacilityId: {viewModel.FacilityId}");
+            System.Diagnostics.Debug.WriteLine($"FacilityName: {viewModel.FacilityName}");
+            System.Diagnostics.Debug.WriteLine($"MinHours: {viewModel.MinimumHours}");
+            System.Diagnostics.Debug.WriteLine($"MaxHours: {viewModel.MaximumHours}");
+
+            if (!ModelState.IsValid)
             {
+                var errors = string.Join(", ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                return Json(new { success = false, message = errors });
+            }
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = string.Join(" ", ModelState.Values
+                            .SelectMany(v => v.Errors)
+                            .Select(e => e.ErrorMessage))
+                    });
+                }
+
                 var facility = await _context.Facilities.FindAsync(viewModel.FacilityId);
                 if (facility == null || !facility.IsActive)
                 {
-                    TempData["ErrorMessage"] = "Selected facility is no longer available.";
-                    return RedirectToAction("Index", "FacilityUser");
+                    return Json(new { 
+                        success = false, 
+                        message = "Selected facility is no longer available."
+                    });
                 }
 
                 // Calculate start and end times
@@ -123,31 +159,37 @@ namespace CasaHeights.Controllers
                 // Validate times
                 if (startTime < DateTime.Now)
                 {
-                    ModelState.AddModelError("", "You cannot book a facility in the past.");
-                    return View(viewModel);
+                    return Json(new { 
+                        success = false, 
+                        message = "You cannot book a facility in the past."
+                    });
                 }
 
                 // Check for maintenance day
                 if (facility.MaintenanceDay.HasValue && (int)viewModel.Date.DayOfWeek == (int)facility.MaintenanceDay.Value)
                 {
-                    ModelState.AddModelError("Date", $"The facility is unavailable on {facility.MaintenanceDay}s due to scheduled maintenance.");
-                    return View(viewModel);
+                    return Json(new { 
+                        success = false, 
+                        message = $"The facility is unavailable on {facility.MaintenanceDay}s due to scheduled maintenance."
+                    });
                 }
 
-                // Calculate duration
+                // Calculate and validate duration
                 double durationHours = (endTime - startTime).TotalHours;
-
-                // Validate duration
                 if (durationHours < facility.MinimumReservationHours)
                 {
-                    ModelState.AddModelError("", $"Minimum reservation duration is {facility.MinimumReservationHours} hours.");
-                    return View(viewModel);
+                    return Json(new { 
+                        success = false, 
+                        message = $"Minimum reservation duration is {facility.MinimumReservationHours} hours."
+                    });
                 }
 
                 if (durationHours > facility.MaximumReservationHours)
                 {
-                    ModelState.AddModelError("", $"Maximum reservation duration is {facility.MaximumReservationHours} hours.");
-                    return View(viewModel);
+                    return Json(new { 
+                        success = false, 
+                        message = $"Maximum reservation duration is {facility.MaximumReservationHours} hours."
+                    });
                 }
 
                 // Check for conflicts
@@ -163,15 +205,23 @@ namespace CasaHeights.Controllers
 
                 if (conflictingReservations.Any())
                 {
-                    ModelState.AddModelError("", "The selected time slot conflicts with an existing reservation.");
-                    return View(viewModel);
+                    return Json(new { 
+                        success = false, 
+                        message = "The selected time slot conflicts with an existing reservation."
+                    });
                 }
 
-                // Calculate total cost
-                decimal totalCost = facility.HourlyRate * (decimal)durationHours;
-
-                // Create the reservation
+                // Get current user ID
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = "Unable to identify user. Please try logging out and back in."
+                    });
+                }
+
+                // Create and save the reservation
                 var reservation = new Reservation
                 {
                     FacilityId = viewModel.FacilityId,
@@ -179,7 +229,7 @@ namespace CasaHeights.Controllers
                     ReservationDate = viewModel.Date,
                     StartTime = startTime,
                     EndTime = endTime,
-                    TotalAmount = totalCost,
+                    TotalAmount = facility.HourlyRate * (decimal)durationHours,
                     Status = ReservationStatus.Pending,
                     Purpose = viewModel.Purpose,
                     AttendeeCount = viewModel.AttendeeCount,
@@ -187,14 +237,23 @@ namespace CasaHeights.Controllers
                     CreatedDate = DateTime.Now
                 };
 
-                _context.Add(reservation);
+                _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Your reservation has been submitted and is pending approval.";
-                return RedirectToAction(nameof(MyReservations));
+                return Json(new { 
+                    success = true, 
+                    message = $"Your reservation for {facility.Name} has been submitted and is pending approval.",
+                    redirectUrl = Url.Action("MyReservations", "ReservationUser")
+                });
             }
-
-            return View(viewModel);
+                catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+                return Json(new { 
+                    success = false, 
+                    message = "An error occurred while processing your reservation." 
+                });
+            }
         }
 
         // GET: ReservationUser/Cancel/5

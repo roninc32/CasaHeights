@@ -8,6 +8,14 @@
 <div class="container py-4">
     <h2 class="mb-4">Book Facility: @Model.FacilityName</h2>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger">
@@ -23,37 +31,70 @@
                 </div>
                 <div class="card-body">
                     <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <!-- Hidden fields -->
                         <input type="hidden" asp-for="FacilityId" />
                         <input type="hidden" asp-for="FacilityName" />
+                        <input type="hidden" asp-for="ImageUrl" />
                         <input type="hidden" asp-for="HourlyRate" />
                         <input type="hidden" asp-for="MinimumHours" />
                         <input type="hidden" asp-for="MaximumHours" />
+                        <!-- Rest of your form fields -->
 
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <!-- Date Selection -->
                         <div class="mb-4">
-                            <label asp-for="Date" class="form-label">Reservation Date</label>
-                            <input asp-for="Date" class="form-control" id="reservationDate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <label for="reservationDate" class="form-label">Reservation Date</label>
+                            <input asp-for="Date" 
+                                   class="form-control" 
+                                   id="reservationDate" 
+                                   type="date" 
+                                   min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                   aria-label="Reservation Date"
+                                   title="Select reservation date" />
                             <span asp-validation-for="Date" class="text-danger"></span>
-                            <div class="form-text">Select the date you want to book the facility</div>
                         </div>
 
+                        @Html.AntiForgeryToken()
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach (var modelState in ViewData.ModelState.Values)
+                                    {
+                                        foreach (var error in modelState.Errors)
+                                        {
+                                            <li>@error.ErrorMessage</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        
                         <!-- Time Selection section -->
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label">Start Time</label>
+                                <label for="startHour" class="form-label">Start Time</label>
                                 <div class="row g-2">
                                     <div class="col-8">
-                                        <select asp-for="StartHour" class="form-select" id="startHour">
-                                            @for (int hour = Model.OpeningTime.Hours; hour < Model.ClosingTime.Hours; hour++)
+                                        <select asp-for="StartHour" 
+                                                class="form-select" 
+                                                id="startHour"
+                                                aria-label="Start Hour"
+                                                title="Select start hour">
+                                            @for (int hour = 8; hour < 22; hour++)
                                             {
-                                                <option value="@hour">@DateTime.Today.AddHours(hour).ToString("h tt")</option>
+                                                <option value="@hour">@hour.ToString("00"):00 (@(hour < 12 ? hour + " AM" : (hour == 12 ? "12 PM" : (hour - 12) + " PM")))</option>
                                             }
                                         </select>
                                     </div>
                                     <div class="col-4">
-                                        <select asp-for="StartMinute" class="form-select">
+                                        <select asp-for="StartMinute" 
+                                                class="form-select" 
+                                                id="startMinute"
+                                                aria-label="Start Minute"
+                                                title="Select start minute">
                                             <option value="0">00</option>
                                             <option value="30">30</option>
                                         </select>
@@ -61,18 +102,26 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">End Time</label>
+                                <label for="endHour" class="form-label">End Time</label>
                                 <div class="row g-2">
                                     <div class="col-8">
-                                        <select asp-for="EndHour" class="form-select" id="endHour">
-                                            @for (int hour = Model.OpeningTime.Hours + 1; hour <= Model.ClosingTime.Hours; hour++)
+                                        <select asp-for="EndHour" 
+                                                class="form-select" 
+                                                id="endHour"
+                                                aria-label="End Hour"
+                                                title="Select end hour">
+                                            @for (int hour = 9; hour <= 22; hour++)
                                             {
-                                                <option value="@hour">@DateTime.Today.AddHours(hour).ToString("h tt")</option>
+                                                <option value="@hour">@hour.ToString("00"):00 (@(hour < 12 ? hour + " AM" : (hour == 12 ? "12 PM" : (hour - 12) + " PM")))</option>
                                             }
                                         </select>
                                     </div>
                                     <div class="col-4">
-                                        <select asp-for="EndMinute" class="form-select">
+                                        <select asp-for="EndMinute" 
+                                                class="form-select" 
+                                                id="endMinute"
+                                                aria-label="End Minute"
+                                                title="Select end minute">
                                             <option value="0">00</option>
                                             <option value="30">30</option>
                                         </select>
@@ -197,38 +246,109 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        
         $(document).ready(function() {
-            // Set minimum date to today
+            // ===============================
+            // Constants and Initialization
+            // ===============================
             const today = new Date().toISOString().split('T')[0];
-            $('#reservationDate').attr('min', today);
+            const defaultStartHour = Math.max(@Model.OpeningTime.Hours, 9);
+            const defaultEndHour = Math.min(defaultStartHour + 2, @Model.ClosingTime.Hours);
+            const hourlyRate = @Model.HourlyRate;
+            const minHours = @Model.MinimumHours;
+            const maxHours = @Model.MaximumHours;
 
-            // Check availability when date changes
+            // ===============================
+            // Initial Setup
+            // ===============================
+            $('#reservationDate').attr('min', today);
+            $('#startHour').val(defaultStartHour);
+            $('#endHour').val(defaultEndHour);
+            calculatePrice(); // Initial price calculation
+
+            // ===============================
+            // Event Listeners
+            // ===============================
             $('#reservationDate').change(function() {
                 checkAvailability();
             });
 
-            // Set default start/end times that make sense
-            const defaultStartHour = Math.max(@Model.OpeningTime.Hours, 9); // 9 AM or opening time if later
-            const defaultEndHour = Math.min(defaultStartHour + 2, @Model.ClosingTime.Hours); // 2 hours later or closing
-                
-                // Set the dropdown values
-                $('#startHour').val(defaultStartHour);
-                $('#endHour').val(defaultEndHour);
-                
-                // Update calculations
-                calculatePrice();
-            });        
-            
+            $('#startHour, #startMinute, #endHour, #endMinute').change(function() {
+                if (validateTimeSelection()) {
+                    calculatePrice();
+                }
+            });
 
-            // Calculate price
+            // ===============================
+            // Form Submission Handler
+            // ===============================
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+
+                if (!$(this).valid() || !validateTimeSelection()) {
+                    return false;
+                }
+
+                const submitButton = $(this).find('button[type="submit"]');
+                const originalText = submitButton.html();
+                submitButton.prop('disabled', true)
+                    .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...');
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                confirmButtonText: 'View My Reservations'
+                            }).then((result) => {
+                                window.location.href = '@Url.Action("MyReservations", "ReservationUser")';
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Booking Failed',
+                                text: response.message || 'Failed to submit reservation. Please try again.'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Submission Error:', {
+                            status: status,
+                            error: error,
+                            responseText: xhr.responseText
+                        });
+
+                        let errorMessage = 'An error occurred while processing your request.';
+                        try {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            errorMessage = errorResponse.message || errorMessage;
+                        } catch (e) {}
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    },
+                    complete: function() {
+                        submitButton.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+
+            // ===============================
+            // Helper Functions
+            // ===============================
             function calculatePrice() {
-                const startHour = parseInt($('#startHour').val());
-                const startMinute = parseInt($('#startMinute').val());
-                const endHour = parseInt($('#endHour').val());
-                const endMinute = parseInt($('#endMinute').val());
+                const startHour = parseInt($('#startHour').val()) || 0;
+                const startMinute = parseInt($('#startMinute').val()) || 0;
+                const endHour = parseInt($('#endHour').val()) || 0;
+                const endMinute = parseInt($('#endMinute').val()) || 0;
                 
-                // Calculate duration in hours
                 let durationHours = endHour - startHour;
                 if (endMinute < startMinute) {
                     durationHours -= 0.5;
@@ -236,16 +356,51 @@
                     durationHours += 0.5;
                 }
                 
-                // Update duration display
-                $('#durationHours').text(durationHours + ' hour(s)');
-                
-                // Calculate price
-                const hourlyRate = @Model.HourlyRate;
+                $('#durationHours').text(durationHours.toFixed(1) + ' hour(s)');
                 const totalPrice = hourlyRate * durationHours;
                 $('#totalPrice').text('$' + totalPrice.toFixed(2));
+
+                return durationHours;
             }
 
-            // Check facility availability via AJAX
+            function validateTimeSelection() {
+                const startHour = parseInt($('#startHour').val());
+                const startMinute = parseInt($('#startMinute').val());
+                const endHour = parseInt($('#endHour').val());
+                const endMinute = parseInt($('#endMinute').val());
+                
+                if (endHour < startHour || (endHour === startHour && endMinute <= startMinute)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Invalid Time Selection',
+                        text: 'End time must be after start time'
+                    });
+                    return false;
+                }
+
+                const durationHours = calculatePrice();
+                
+                if (durationHours < minHours) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Invalid Duration',
+                        text: `Minimum booking duration is ${minHours} hours`
+                    });
+                    return false;
+                }
+
+                if (durationHours > maxHours) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Invalid Duration',
+                        text: `Maximum booking duration is ${maxHours} hours`
+                    });
+                    return false;
+                }
+
+                return true;
+            }
+
             function checkAvailability() {
                 const selectedDate = $('#reservationDate').val();
                 if (!selectedDate) return;
@@ -276,13 +431,11 @@
                             return;
                         }
                         
-                        // Display time slots
                         let timeSlotsHtml = `<h6 class="mb-3">Available Time Slots</h6>`;
                         timeSlotsHtml += `<div class="row g-2">`;
                         
                         response.slots.forEach(slot => {
                             const bgClass = slot.available ? 'bg-success bg-opacity-10' : 'bg-danger bg-opacity-10';
-                            const textClass = slot.available ? 'text-success' : 'text-danger';
                             const statusText = slot.available ? 'Available' : 'Booked';
                             
                             timeSlotsHtml += `
@@ -297,11 +450,10 @@
                         
                         timeSlotsHtml += `</div>`;
                         $('#timeSlots').html(timeSlotsHtml);
-                        
-                        // Calculate initial price
                         calculatePrice();
                     },
                     error: function(xhr, status, error) {
+                        console.error('Availability Check Error:', error);
                         $('#timeSlots').html(`
                             <div class="alert alert-danger">
                                 <i class="fas fa-exclamation-circle me-2"></i> Error checking availability: ${error}
@@ -310,9 +462,6 @@
                     }
                 });
             }
-
-            // Initialize with default values
-            calculatePrice();
         });
     </script>
 }
