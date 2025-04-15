@@ -5,11 +5,19 @@ using CasaHeights.Models;
 using CasaHeights.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using CasaHeights.Services;
+using CasaHeights.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Program.cs
+builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
+
 
 // Configure session services with more explicit settings
 builder.Services.AddDistributedMemoryCache();

@@ -1,0 +1,115 @@
+@model CasaHeights.ViewModels.ServiceRequestViewModel
+@{
+    ViewData["Title"] = "Submit Service Request";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tools me-2"></i>Submit Service Request
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach (var modelState in ViewData.ModelState.Values)
+                                {
+                                    foreach (var error in modelState.Errors)
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            @Html.Raw(TempData["ErrorMessage"])
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label asp-for="RequestType" class="form-label"></label>
+                            <select asp-for="RequestType" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<ServiceRequestType>()">
+                                <option value="">-- Select Type --</option>
+                            </select>
+                            <span asp-validation-for="RequestType" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Priority" class="form-label"></label>
+                            <select asp-for="Priority" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<PriorityLevel>()">
+                                <option value="">-- Select Priority --</option>
+                            </select>
+                            <span asp-validation-for="Priority" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Location" class="form-label"></label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="attachment" class="form-label">Attachment (Optional)</label>
+                            <input type="file" class="form-control" id="attachment" name="attachment" />
+                            <small class="text-muted">Max size: 5MB</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="MyRequests" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-1"></i> Submit Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function() {
+            // Show Bootstrap validation styles
+            $('form').on('submit', function() {
+                if (!$(this).valid()) {
+                    // Add visual feedback
+                    $(this).find(':input.input-validation-error').first().focus();
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
+}

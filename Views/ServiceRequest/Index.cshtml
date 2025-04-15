@@ -1,0 +1,88 @@
+@* Views/ServiceRequest/Index.cshtml *@
+@model IEnumerable<CasaHeights.Models.ServiceRequest>
+@{
+    ViewData["Title"] = "My Service Requests";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-clipboard-list me-2"></i>My Service Requests</h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> New Request
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> You haven't submitted any service requests yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model)
+                    {
+                        <tr>
+                            <td>#@request.Id</td>
+                            <td>@request.RequestType</td>
+                            <td>@request.Title</td>
+                            <td>
+                                <span class="badge bg-@GetStatusColor(request.Status)">
+                                    @request.Status
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-@GetPriorityColor(request.Priority)">
+                                    @request.Priority
+                                </span>
+                            </td>
+                            <td>@request.CreatedDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@request.Id" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetStatusColor(ServiceRequestStatus status) => status switch
+    {
+        ServiceRequestStatus.New => "primary",
+        ServiceRequestStatus.InProgress => "info",
+        ServiceRequestStatus.OnHold => "warning",
+        ServiceRequestStatus.Completed => "success",
+        ServiceRequestStatus.Cancelled => "secondary",
+        _ => "secondary"
+    };
+
+    private string GetPriorityColor(PriorityLevel priority) => priority switch
+    {
+        PriorityLevel.Low => "success",
+        PriorityLevel.Medium => "info",
+        PriorityLevel.High => "warning",
+        PriorityLevel.Emergency => "danger",
+        _ => "secondary"
+    };
+}

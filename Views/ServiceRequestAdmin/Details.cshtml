@@ -1,0 +1,197 @@
+@model CasaHeights.Models.ServiceRequest
+@{
+    ViewData["Title"] = $"Service Request #{Model.Id}";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center bg-white">
+                    <h5 class="mb-0">Service Request #@Model.Id</h5>
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i> Back to List
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Request Details</h6>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Type</dt>
+                                <dd class="col-sm-8">@Model.RequestType</dd>
+
+                                <dt class="col-sm-4">Title</dt>
+                                <dd class="col-sm-8">@Model.Title</dd>
+
+                                <dt class="col-sm-4">Priority</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Priority != null)
+                                    {
+                                        <span class="badge bg-@GetPriorityColor(Model.Priority)">
+                                            @Model.Priority
+                                        </span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">Status</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Status != null)
+                                    {
+                                        <span class="badge bg-@GetStatusColor(Model.Status)">
+                                            @Model.Status
+                                        </span>
+                                    }
+                                </dd>
+
+                                @if (!string.IsNullOrEmpty(Model.Location))
+                                {
+                                    <dt class="col-sm-4">Location</dt>
+                                    <dd class="col-sm-8">@Model.Location</dd>
+                                }
+
+                                <dt class="col-sm-4">Created</dt>
+                                <dd class="col-sm-8">@Model.CreatedDate.ToString("MMM dd, yyyy HH:mm")</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Resident Information</h6>
+                            <dl class="row mb-0">
+                                @if (Model.Resident != null)
+                                {
+                                    <dt class="col-sm-4">Name</dt>
+                                    <dd class="col-sm-8">@Model.Resident.FullName</dd>
+
+                                    <dt class="col-sm-4">Unit</dt>
+                                    <dd class="col-sm-8">@Model.Resident.HouseNumber</dd>
+
+                                    <dt class="col-sm-4">Phone</dt>
+                                    <dd class="col-sm-8">@Model.Resident.PhoneNumber</dd>
+
+                                    <dt class="col-sm-4">Email</dt>
+                                    <dd class="col-sm-8">@Model.Resident.Email</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">Description</h6>
+                        <p class="mb-0">@Model.Description</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.AttachmentUrl))
+                    {
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-2">Attachment</h6>
+                            <a href="@Model.AttachmentUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-download me-1"></i> View Attachment
+                            </a>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.StaffNotes))
+                    {
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-2">Staff Notes</h6>
+                            <p class="mb-0">@Model.StaffNotes</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Update Status</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateStatus" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select" asp-items="Html.GetEnumSelectList<ServiceRequestStatus>()">
+                                <option value="">-- Select Status --</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Staff Notes</label>
+                            <textarea name="staffNotes" class="form-control" rows="3">@Model.StaffNotes</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save me-1"></i> Update Status
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Assign Staff</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AssignStaff" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Staff Member</label>
+                            @if (ViewBag.StaffMembers != null)
+                            {
+                                <select name="staffId" class="form-select">
+                                    <option value="">-- Select Staff --</option>
+                                    @foreach (var staff in ViewBag.StaffMembers)
+                                    {
+                                        <option value="@staff.Id" selected="@(Model.StaffId == staff.Id)">
+                                            @staff.FullName
+                                        </option>
+                                    }
+                                </select>
+                            }
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-user-plus me-1"></i> Assign Staff
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(ServiceRequestStatus status) => status switch
+    {
+        ServiceRequestStatus.New => "primary",
+        ServiceRequestStatus.InProgress => "info",
+        ServiceRequestStatus.OnHold => "warning",
+        ServiceRequestStatus.Completed => "success",
+        ServiceRequestStatus.Cancelled => "secondary",
+        _ => "secondary"
+    };
+
+    private string GetPriorityColor(PriorityLevel priority) => priority switch
+    {
+        PriorityLevel.Low => "success",
+        PriorityLevel.Medium => "info",
+        PriorityLevel.High => "warning",
+        PriorityLevel.Emergency => "danger",
+        _ => "secondary"
+    };
+}
+

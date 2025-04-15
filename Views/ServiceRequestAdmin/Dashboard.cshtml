@@ -1,0 +1,206 @@
+@* Views/ServiceRequestAdmin/Dashboard.cshtml *@
+@model ServiceRequestDashboardViewModel
+@{
+    ViewData["Title"] = "Service Requests Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">New Requests</h6>
+                            <h4 class="mb-0">@Model.NewRequestsCount</h4>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-inbox fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">In Progress</h6>
+                            <h4 class="mb-0">@Model.InProgressCount</h4>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-clock fa-2x text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Completed Today</h6>
+                            <h4 class="mb-0">@Model.CompletedTodayCount</h4>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Emergency</h6>
+                            <h4 class="mb-0">@Model.EmergencyCount</h4>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                            <i class="fas fa-exclamation-circle fa-2x text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Requests</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Title</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in Model.RecentRequests)
+                            {
+                                <tr>
+                                    <td>#@request.Id</td>
+                                    <td>@request.RequestType</td>
+                                    <td>@request.Title</td>
+                                    <td>
+                                        <span class="badge bg-@GetPriorityColor(request.Priority)">
+                                            @request.Priority
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-@GetStatusColor(request.Status)">
+                                            @request.Status
+                                        </span>
+                                    </td>
+                                    <td>@request.CreatedDate.ToString("MMM dd, HH:mm")</td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@request.Id" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Requests by Type</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="requestsByTypeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Requests by Status</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="requestsByStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Requests by Type Chart
+        new Chart(document.getElementById('requestsByTypeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: @Json.Serialize(Model.RequestsByType.Select(x => x.Type)),
+                datasets: [{
+                    data: @Json.Serialize(Model.RequestsByType.Select(x => x.Count)),
+                    backgroundColor: [
+                        '#4e73df',
+                        '#1cc88a',
+                        '#36b9cc',
+                        '#f6c23e'
+                    ]
+                }]
+            }
+        });
+
+        // Requests by Status Chart
+        new Chart(document.getElementById('requestsByStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: @Json.Serialize(Model.RequestsByStatus.Select(x => x.Status)),
+                datasets: [{
+                    data: @Json.Serialize(Model.RequestsByStatus.Select(x => x.Count)),
+                    backgroundColor: [
+                        '#4e73df',
+                        '#36b9cc',
+                        '#f6c23e',
+                        '#1cc88a',
+                        '#858796'
+                    ]
+                }]
+            }
+        });
+    </script>
+}
+
+@functions {
+    private string GetStatusColor(ServiceRequestStatus status) => status switch
+    {
+        ServiceRequestStatus.New => "primary",
+        ServiceRequestStatus.InProgress => "info",
+        ServiceRequestStatus.OnHold => "warning",
+        ServiceRequestStatus.Completed => "success",
+        ServiceRequestStatus.Cancelled => "secondary",
+        _ => "secondary"
+    };
+
+    private string GetPriorityColor(PriorityLevel priority) => priority switch
+    {
+        PriorityLevel.Low => "success",
+        PriorityLevel.Medium => "info",
+        PriorityLevel.High => "warning",
+        PriorityLevel.Emergency => "danger",
+        _ => "secondary"
+    };
+}

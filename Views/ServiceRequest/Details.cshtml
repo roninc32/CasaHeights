@@ -1,0 +1,134 @@
+@model CasaHeights.Models.ServiceRequest
+@{
+    ViewData["Title"] = $"Service Request #{Model.Id}";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-clipboard-list me-2"></i>Request Details #@Model.Id
+            </h5>
+            <a asp-action="MyRequests" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-3">Request Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Type</dt>
+                        <dd class="col-sm-8">@Model.RequestType</dd>
+
+                        <dt class="col-sm-4">Title</dt>
+                        <dd class="col-sm-8">@Model.Title</dd>
+
+                        <dt class="col-sm-4">Priority</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@GetPriorityColor(Model.Priority)">
+                                @Model.Priority
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@GetStatusColor(Model.Status)">
+                                @Model.Status
+                            </span>
+                        </dd>
+
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+                            <dt class="col-sm-4">Location</dt>
+                            <dd class="col-sm-8">@Model.Location</dd>
+                        }
+
+                        <dt class="col-sm-4">Created</dt>
+                        <dd class="col-sm-8">@Model.CreatedDate.ToString("MMM dd, yyyy HH:mm")</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-3">Staff Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Assigned To</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.AssignedStaff != null)
+                            {
+                                <span>@Model.AssignedStaff.FullName</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not yet assigned</span>
+                            }
+                        </dd>
+
+                        @if (Model.ProcessedDate.HasValue)
+                        {
+                            <dt class="col-sm-4">Processed</dt>
+                            <dd class="col-sm-8">@Model.ProcessedDate.Value.ToString("MMM dd, yyyy HH:mm")</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-bold mb-2">Description</h6>
+                <p class="mb-0">@Model.Description</p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.AttachmentUrl))
+            {
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-2">Attachment</h6>
+                    <a href="@Model.AttachmentUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-download me-1"></i> View Attachment
+                    </a>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.StaffNotes))
+            {
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-2">Staff Notes</h6>
+                    <p class="mb-0">@Model.StaffNotes</p>
+                </div>
+            }
+
+            @if (Model.Status == ServiceRequestStatus.New || Model.Status == ServiceRequestStatus.OnHold)
+            {
+                <div class="border-top pt-3">
+                    <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" 
+                          onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times me-1"></i> Cancel Request
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(ServiceRequestStatus status) => status switch
+    {
+        ServiceRequestStatus.New => "primary",
+        ServiceRequestStatus.InProgress => "info",
+        ServiceRequestStatus.OnHold => "warning",
+        ServiceRequestStatus.Completed => "success",
+        ServiceRequestStatus.Cancelled => "secondary",
+        _ => "secondary"
+    };
+
+    private string GetPriorityColor(PriorityLevel priority) => priority switch
+    {
+        PriorityLevel.Low => "success",
+        PriorityLevel.Medium => "info",
+        PriorityLevel.High => "warning",
+        PriorityLevel.Emergency => "danger",
+        _ => "secondary"
+    };
+}
