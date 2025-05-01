@@ -1,0 +1,56 @@
+@using CasaHeights.Models.Forum
+@model ForumIndexViewModel
+
+<div class="sticky-top pt-4">
+    <!-- Stats Card -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Forum Statistics</h5>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Total Posts</span>
+                <span class="fw-medium">@Model.TotalPosts</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-muted">Active Discussions</span>
+                <span class="fw-medium">@Model.ActiveDiscussions</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Card -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Categories</h5>
+            <div class="list-group list-group-flush">
+                @foreach (var category in Model.Categories)
+                {
+                    <a asp-action="Index" asp-route-category="@category.Name"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                              @(category.Name == Model.Category ? "active" : "")">
+                        @category.Name
+                        <span class="badge bg-primary rounded-pill">
+                            @category.Posts.Count(p => !p.IsDeleted)
+                        </span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Tags Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Popular Tags</h5>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var tag in Model.PopularTags)
+                {
+                    <a asp-action="Index" asp-route-tag="@tag.Name"
+                       class="badge bg-light text-dark text-decoration-none 
+                              @(tag.Name == Model.Tag ? "bg-primary text-white" : "")">
+                        #@tag.Name
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

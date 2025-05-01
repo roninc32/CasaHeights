@@ -87,6 +87,13 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin"));
 });
 
+builder.Services.AddLogging(options =>
+{
+    options.AddConsole();
+    options.AddDebug();
+    options.SetMinimumLevel(LogLevel.Information);
+});
+
 // Register SeedService
 builder.Services.AddScoped<SeedService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();

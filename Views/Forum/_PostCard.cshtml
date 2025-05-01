@@ -1,0 +1,116 @@
+@using CasaHeights.ViewModels.Forum.Components
+@using CasaHeights.Models.Forum
+@model ForumPostCardViewModel
+
+<div class="card border-0 shadow-sm mb-3 @(Model.Post.IsPinned ? "border-primary" : "")">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+                <img src="@(Model.Post.Author?.ProfilePicture ?? "/images/default-avatar.png")" 
+                     class="rounded-circle me-2" width="32" height="32" alt="Avatar" />
+                <div>
+                    <span class="fw-medium">@Model.Post.Author?.FullName</span>
+                    <small class="text-muted d-block">
+                        @Model.Post.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                    </small>
+                </div>
+            </div>
+            @if (Model.ShowModeratorActions)
+            {
+                <div class="dropdown">
+                    <button class="btn btn-link text-muted" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form asp-action="PinPost" asp-route-id="@Model.Post.Id" method="post" 
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-pin-angle me-2"></i>
+                                    @(Model.Post.IsPinned ? "Unpin" : "Pin") Post
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item text-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal@(Model.Post.Id)">
+                                <i class="bi bi-trash me-2"></i>Delete Post
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            }
+        </div>
+
+        @if (Model.Post.IsPinned)
+        {
+            <div class="badge bg-primary mb-2">
+                <i class="bi bi-pin-angle-fill me-1"></i>Pinned
+            </div>
+        }
+
+        <h3 class="h5 mb-2">
+            <a asp-action="Post" asp-route-id="@Model.Post.Id" 
+               class="text-decoration-none text-dark">
+                @Model.Post.Title
+            </a>
+        </h3>
+
+        <p class="card-text text-muted">@Model.TruncatedContent</p>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-2">
+                @foreach (var category in Model.Post.Categories)
+                {
+                    <a asp-action="Index" asp-route-category="@category.Name" 
+                       class="badge bg-light text-dark text-decoration-none">
+                        @category.Name
+                    </a>
+                }
+                @foreach (var tag in Model.Post.Tags)
+                {
+                    <a asp-action="Index" asp-route-tag="@tag.Name" 
+                       class="badge bg-light text-dark text-decoration-none">
+                        #@tag.Name
+                    </a>
+                }
+            </div>
+            <div class="d-flex align-items-center text-muted">
+                <i class="bi bi-chat-dots me-1"></i>
+                <span>@Model.Post.CommentCount</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.ShowModeratorActions)
+{
+    <div class="modal fade" id="deleteModal@(Model.Post.Id)" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-action="DeletePost" asp-route-id="@Model.Post.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this post?</p>
+                        <div class="mb-3">
+                            <label class="form-label">Reason for deletion:</label>
+                            <textarea name="reason" class="form-control" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

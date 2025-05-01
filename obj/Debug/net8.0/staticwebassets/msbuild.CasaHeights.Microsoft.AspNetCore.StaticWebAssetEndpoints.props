@@ -4,13 +4,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CasaHeights.bm0xwreayl.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bm0xwreayl"},{"Name":"integrity","Value":"sha256-nbJNTV/PDDHRLPUMeOfKotqv4km9N1ZQNWBhc1csVKI="},{"Name":"label","Value":"_content/CasaHeights/CasaHeights.bundle.scp.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1129"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nbJNTV/PDDHRLPUMeOfKotqv4km9N1ZQNWBhc1csVKI=\u0022"},{"Name":"Last-Modified","Value":"Tue, 15 Apr 2025 17:43:45 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1129"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nbJNTV/PDDHRLPUMeOfKotqv4km9N1ZQNWBhc1csVKI=\u0022"},{"Name":"Last-Modified","Value":"Thu, 01 May 2025 07:04:29 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/CasaHeights/CasaHeights.bundle.scp.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\CasaHeights.bm0xwreayl.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-nbJNTV/PDDHRLPUMeOfKotqv4km9N1ZQNWBhc1csVKI="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1129"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nbJNTV/PDDHRLPUMeOfKotqv4km9N1ZQNWBhc1csVKI=\u0022"},{"Name":"Last-Modified","Value":"Tue, 15 Apr 2025 17:43:45 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1129"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nbJNTV/PDDHRLPUMeOfKotqv4km9N1ZQNWBhc1csVKI=\u0022"},{"Name":"Last-Modified","Value":"Thu, 01 May 2025 07:04:29 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/CasaHeights/css/account.b96cbzcteu.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\account.css'))</AssetFile>

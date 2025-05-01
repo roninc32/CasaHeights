@@ -52,6 +52,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWZXJpZnlFbWFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Admin/Forum/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRm9ydW1cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Announcements/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5ub3VuY2VtZW50c1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -106,6 +110,26 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Facility/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmFjaWxpdHlcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Forum/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ydW1cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Forum/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ydW1cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Forum/Post.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ydW1cUG9zdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Forum/_ForumSidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ydW1cX0ZvcnVtU2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Forum/_PostCard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ydW1cX1Bvc3RDYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ASUS/source/repos/Elnet/CasaHeights/Views/Home/Admin.cshtml]
