@@ -338,6 +338,29 @@
         .dark-mode .dropdown-header {
             color: #e0e0e0;
         }
+
+        /* Submenu Styles */
+        #sidebar ul li ul.collapse {
+            padding-left: 0;
+        }
+        
+        #sidebar ul li ul.collapse li a {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        #sidebar.collapsed ul li ul.collapse {
+            display: none !important;
+        }
+        
+        #sidebar ul li a.dropdown-toggle::after {
+            float: right;
+            margin-top: 6px;
+        }
+        
+        #sidebar.collapsed ul li a.dropdown-toggle::after {
+            display: none;
+        }
     </style>
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -381,28 +404,36 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-file-invoice"></i>
-                        <span>Payments</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a asp-controller="ServiceRequest" asp-action="MyRequests" class="nav-link">
                         <i class="fas fa-tools"></i>
                         <span>Service Requests</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-file"></i>
-                        <span>Documents</span>
+                    <a href="#resourcesSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Resources</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
+                    <ul class="collapse list-unstyled" id="resourcesSubmenu">
+                        <li>
+                            <a asp-controller="Resources" asp-action="Guide" class="nav-link">
+                                <i class="fas fa-book"></i>
+                                <span>Homeowner's Guide</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Resources" asp-action="Rules" class="nav-link">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Community Rules</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Resources" asp-action="Contacts" class="nav-link">
+                                <i class="fas fa-address-book"></i>
+                                <span>Contact Directory</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>
@@ -429,7 +460,7 @@
                             <a class="nav-link" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-bell"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    3
+                                     3
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">

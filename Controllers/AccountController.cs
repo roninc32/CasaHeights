@@ -41,6 +41,29 @@ namespace CasaHeights.Controllers
                 model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
+                // Get the logged-in user
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    // Get the user roles
+                    var roles = await userManager.GetRolesAsync(user);
+                    
+                    // Redirect based on role
+                    if (roles.Contains("Admin"))
+                    {
+                        return RedirectToAction("Admin", "Home");
+                    }
+                    else if (roles.Contains("Staff"))
+                    {
+                        return RedirectToAction("Staff", "Home");
+                    }
+                    else // User or Homeowner role
+                    {
+                        return RedirectToAction("User", "Home");
+                    }
+                }
+                
+                // Fallback to home page if we couldn't determine the role
                 return RedirectToAction("Index", "Home");
             }
             ModelState.AddModelError(string.Empty, "Invalid login attempt");
