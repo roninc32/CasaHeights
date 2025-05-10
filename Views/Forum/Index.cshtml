@@ -1,0 +1,101 @@
+@using CasaHeights.ViewModels.Forum
+@using CasaHeights.ViewModels.Forum.Components
+@model ForumIndexViewModel
+@{
+    ViewData["Title"] = "Community Forum";
+    Layout = "_UserLayout";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h3 mb-0">Community Forum</h1>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a asp-action="Create" class="btn btn-primary rounded-pill">
+                                <i class="bi bi-plus-circle me-2"></i>New Discussion
+                            </a>
+                        }
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <form method="get" class="d-flex gap-2">
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Search discussions..." value="@Model.SearchTerm">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <select name="category" class="form-select" 
+                                    onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Name" 
+                                            selected="@(category.Name == Model.Category)">
+                                        @category.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Posts List -->
+                    @foreach (var post in Model.Posts)
+                    {
+                        <partial name="_PostCard" model="new ForumPostCardViewModel { Post = post }" />
+                    }
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index" 
+                                   asp-route-page="@(Model.CurrentPage - 1)"
+                                   asp-route-category="@Model.Category"
+                                   asp-route-tag="@Model.Tag"
+                                   asp-route-search="@Model.SearchTerm">
+                                    Previous
+                                </a>
+                            </li>
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Index" 
+                                       asp-route-page="@i"
+                                       asp-route-category="@Model.Category"
+                                       asp-route-tag="@Model.Tag"
+                                       asp-route-search="@Model.SearchTerm">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+                            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index" 
+                                   asp-route-page="@(Model.CurrentPage + 1)"
+                                   asp-route-category="@Model.Category"
+                                   asp-route-tag="@Model.Tag"
+                                   asp-route-search="@Model.SearchTerm">
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <partial name="_ForumSidebar" model="Model" />
+        </div>
+    </div>
+</div>

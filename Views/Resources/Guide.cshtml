@@ -1,0 +1,258 @@
+@* Views/Resources/Guide.cshtml *@
+@{
+    ViewData["Title"] = "Homeowner's Guide";
+    Layout = "_UserLayout";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            <i class="bi bi-journal-text text-primary"></i> Homeowner's Guide
+        </h1>
+        <div>
+            <a href="javascript:window.print();" class="btn btn-outline-primary">
+                <i class="bi bi-printer"></i> Print
+            </a>
+            <a asp-controller="Resources" asp-action="DownloadGuide" class="btn btn-primary ms-2">
+                <i class="bi bi-download"></i> Download PDF
+            </a>
+        </div>
+    </div>
+
+    <div class="card" id="guideContent">
+        <div class="card-body">
+            <!-- Cover Section -->
+            <div class="text-center mb-5">
+                <h2 class="display-4 mb-3">Casa Heights</h2>
+                <h3 class="mb-4">Homeowner's Guide</h3>
+                <p class="text-muted">Last updated: @DateTime.Now.ToString("MMMM yyyy")</p>
+            </div>
+            
+            <!-- Table of Contents -->
+            <div class="mb-5" id="toc">
+                <h4 class="border-bottom pb-2 mb-3">Table of Contents</h4>
+                <div class="list-group">
+                    <a href="#welcome" class="list-group-item list-group-item-action">1. Welcome to Casa Heights</a>
+                    <a href="#important-contacts" class="list-group-item list-group-item-action">2. Important Contacts</a>
+                    <a href="#amenities" class="list-group-item list-group-item-action">3. Amenities and Common Areas</a>
+                    <a href="#rules" class="list-group-item list-group-item-action">4. Community Rules and Guidelines</a>
+                    <a href="#maintenance" class="list-group-item list-group-item-action">5. Maintenance and Service Requests</a>
+                    <a href="#payments" class="list-group-item list-group-item-action">6. Association Fees and Payments</a>
+                    <a href="#emergencies" class="list-group-item list-group-item-action">7. Emergency Procedures</a>
+                    <a href="#faq" class="list-group-item list-group-item-action">8. Frequently Asked Questions</a>
+                </div>
+            </div>
+            
+            <!-- Welcome Section -->
+            <section id="welcome" class="mb-5">
+                <h3 class="border-bottom pb-2 mb-3">1. Welcome to Casa Heights</h3>
+                <p class="lead">Welcome to your new home at Casa Heights! We're delighted that you've chosen to be part of our community.</p>
+                
+                <p>This guide has been prepared to help you get acquainted with Casa Heights and make your living experience here as pleasant as possible. Whether you're a new homeowner or have been with us for years, we hope you'll find this information useful.</p>
+                
+                <h5 class="mt-4">About Casa Heights</h5>
+                <p>Casa Heights is a premier residential community established in 2015. Our community consists of 120 residential units spread across 5 buildings on a beautifully landscaped 5-acre property. We pride ourselves on our well-maintained facilities, strong sense of community, and commitment to providing a high quality of life for all residents.</p>
+                
+                <h5 class="mt-4">Community Vision</h5>
+                <p>Our vision is to create and maintain a vibrant, safe, and friendly community where all residents can enjoy a comfortable and fulfilling lifestyle. We strive to promote a culture of mutual respect, cooperation, and environmental responsibility.</p>
+                
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-lightbulb me-2"></i> <strong>Quick Tip:</strong> Join our community events to meet your neighbors and become an active part of Casa Heights!
+                </div>
+            </section>
+            
+            <!-- Important Contacts -->
+            <section id="important-contacts" class="mb-5">
+                <h3 class="border-bottom pb-2 mb-3">2. Important Contacts</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="bi bi-building me-2"></i>Management Office</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Hours:</strong> Monday-Friday, 9:00 AM - 5:00 PM</p>
+                                <p><strong>Phone:</strong> (123) 456-7890</p>
+                                <p><strong>Email:</strong> office@casaheights.com</p>
+                                <p><strong>Location:</strong> Building A, Ground Floor</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="mb-0"><i class="bi bi-shield me-2"></i>Emergency Contacts</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Security:</strong> (123) 456-7891 (24/7)</p>
+                                <p><strong>Maintenance Emergency:</strong> (123) 456-7892</p>
+                                <p><strong>Fire Department:</strong> 911</p>
+                                <p><strong>Police:</strong> 911</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="mt-3">For a complete list of contacts, please refer to the Contact Directory in our resident portal.</p>
+            </section>
+            
+            <!-- Amenities and Common Areas -->
+            <section id="amenities" class="mb-5">
+                <h3 class="border-bottom pb-2 mb-3">3. Amenities and Common Areas</h3>
+                
+                <p>Casa Heights offers a variety of amenities designed to enhance your living experience:</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5><i class="bi bi-water me-2 text-info"></i>Swimming Pool</h5>
+                                <p>Hours: 7:00 AM - 10:00 PM daily</p>
+                                <p>Our heated swimming pool is available year-round. Please observe all posted safety rules.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5><i class="bi bi-bicycle me-2 text-success"></i>Fitness Center</h5>
+                                <p>Hours: 5:00 AM - 11:00 PM daily</p>
+                                <p>Key card access required. Equipment is sanitized regularly.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5><i class="bi bi-people me-2 text-primary"></i>Community Room</h5>
+                                <p>Available for reservation</p>
+                                <p>Perfect for private events and gatherings. Reservations can be made through the resident portal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-success mt-3">
+                    <i class="bi bi-info-circle me-2"></i> <strong>Note:</strong> All amenities can be booked through our online facility reservation system on the resident portal.
+                </div>
+            </section>
+            
+            <!-- Additional sections would continue here -->
+            <section id="rules" class="mb-5">
+                <h3 class="border-bottom pb-2 mb-3">4. Community Rules and Guidelines</h3>
+                
+                <p>To ensure a peaceful and enjoyable environment for everyone, we ask all residents to observe the following guidelines:</p>
+                
+                <h5 class="mt-4">Noise Policy</h5>
+                <p>Quiet hours are from 10:00 PM to 8:00 AM. During these hours, please keep noise levels to a minimum.</p>
+                
+                <h5 class="mt-4">Pet Policy</h5>
+                <ul>
+                    <li>Maximum of 2 pets per household</li>
+                    <li>Dogs must be leashed in common areas</li>
+                    <li>Pet owners must clean up after their pets</li>
+                    <li>Pets must be registered with the management office</li>
+                </ul>
+                
+                <h5 class="mt-4">Parking Rules</h5>
+                <p>Each unit is assigned 1-2 parking spaces. Visitor parking is available on a first-come, first-served basis. Unauthorized vehicles may be towed at the owner's expense.</p>
+                
+                <p class="mt-4">For a complete set of rules and regulations, please refer to the Community Rules document on our website.</p>
+            </section>
+
+            <!-- More sections would continue -->
+            
+            <!-- FAQ Section -->
+            <section id="faq" class="mb-5">
+                <h3 class="border-bottom pb-2 mb-3">8. Frequently Asked Questions</h3>
+                
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                How do I submit a maintenance request?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="faqOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can submit maintenance requests through the resident portal under "Service Requests" or by contacting the management office during business hours.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                How do I pay my association fees?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="faqTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Association fees can be paid online through the resident portal, by setting up automatic bank drafts, or by check at the management office.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faqThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                How do I reserve the community room?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="faqThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The community room can be reserved through the resident portal under "Facilities." Reservations should be made at least one week in advance.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Footer -->
+            <div class="border-top pt-4 mt-5">
+                <p class="text-muted text-center">© @DateTime.Now.Year Casa Heights Homeowners Association. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Print styles */
+    @@media print {
+        header, footer, .navbar, .btn {
+            display: none !important;
+        }
+        
+        #guideContent {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        
+        body {
+            font-size: 12pt;
+        }
+        
+        h3 {
+            page-break-after: avoid;
+            page-break-inside: avoid;
+        }
+        
+        section {
+            page-break-inside: avoid;
+        }
+    }
+    
+    /* Smooth scrolling for anchor links */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    /* Section styling */
+    section {
+        scroll-margin-top: 80px;
+    }
+</style>

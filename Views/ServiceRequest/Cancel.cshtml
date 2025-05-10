@@ -1,0 +1,107 @@
+@model CasaHeights.Models.ServiceRequest
+@{
+    ViewData["Title"] = "Cancel Service Request";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-exclamation-triangle me-2"></i>Cancel Service Request #@Model.Id
+            </h5>
+            <a asp-action="MyRequests" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-4">
+                    <i class="fas fa-exclamation-circle me-2"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Are you sure you want to cancel this service request? This action cannot be undone.
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-3">Request Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Type</dt>
+                        <dd class="col-sm-8">@Model.RequestType</dd>
+
+                        <dt class="col-sm-4">Title</dt>
+                        <dd class="col-sm-8">@Model.Title</dd>
+
+                        <dt class="col-sm-4">Priority</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@GetPriorityColor(Model.Priority)">
+                                @Model.Priority
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@GetStatusColor(Model.Status)">
+                                @Model.Status
+                            </span>
+                        </dd>
+
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+                            <dt class="col-sm-4">Location</dt>
+                            <dd class="col-sm-8">@Model.Location</dd>
+                        }
+
+                        <dt class="col-sm-4">Created</dt>
+                        <dd class="col-sm-8">@Model.CreatedDate.ToString("MMM dd, yyyy HH:mm")</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-3">Description</h6>
+                    <p class="mb-0">@Model.Description</p>
+                </div>
+            </div>
+
+            <form asp-action="Cancel" method="post" class="border-top pt-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="MyRequests" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i> No, Keep Request
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-check me-1"></i> Yes, Cancel Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(ServiceRequestStatus status) => status switch
+    {
+        ServiceRequestStatus.New => "primary",
+        ServiceRequestStatus.InProgress => "info",
+        ServiceRequestStatus.OnHold => "warning",
+        ServiceRequestStatus.Completed => "success",
+        ServiceRequestStatus.Cancelled => "secondary",
+        _ => "secondary"
+    };
+
+    private string GetPriorityColor(PriorityLevel priority) => priority switch
+    {
+        PriorityLevel.Low => "success",
+        PriorityLevel.Medium => "info",
+        PriorityLevel.High => "warning",
+        PriorityLevel.Emergency => "danger",
+        _ => "secondary"
+    };
+}

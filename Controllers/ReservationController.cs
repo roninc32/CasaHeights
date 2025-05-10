@@ -23,25 +23,47 @@ namespace CasaHeights.Controllers
         // Display all reservations with filtering options
         public async Task<IActionResult> Index(string status = null)
         {
-            // Start with a base query
-            IQueryable<Reservation> query = _context.Reservations
-                .Include(r => r.Facility)
-                .Include(r => r.User)
-                .Include(r => r.ProcessedBy);
-
-            // Apply status filter if provided
-            if (!string.IsNullOrEmpty(status) && Enum.TryParse<ReservationStatus>(status, out var statusEnum))
+            System.Diagnostics.Debug.WriteLine("Admin - Loading all reservations");
+            
+            try
             {
-                query = query.Where(r => r.Status == statusEnum);
-            }
+                // Start with a base query
+                IQueryable<Reservation> query = _context.Reservations
+                    .Include(r => r.Facility)
+                    .Include(r => r.User)
+                    .Include(r => r.ProcessedBy);
 
-            // Apply ordering at the end
-            var orderedQuery = query.OrderByDescending(r => r.ReservationDate);
-            
-            var reservations = await orderedQuery.ToListAsync();
-            ViewBag.StatusFilter = status;
-            
-            return View(reservations);
+                // Apply status filter if provided
+                if (!string.IsNullOrEmpty(status) && Enum.TryParse<ReservationStatus>(status, out var statusEnum))
+                {
+                    query = query.Where(r => r.Status == statusEnum);
+                    System.Diagnostics.Debug.WriteLine($"Filtering by status: {status}");
+                }
+
+                // Apply ordering at the end
+                var orderedQuery = query.OrderByDescending(r => r.CreatedDate);
+                
+                var reservations = await orderedQuery.ToListAsync();
+                
+                // Add debug info for the view
+                ViewBag.StatusFilter = status;
+                ViewBag.TotalReservations = await _context.Reservations.CountAsync();
+                ViewBag.FilteredCount = reservations.Count;
+                
+                System.Diagnostics.Debug.WriteLine($"Found {reservations.Count} reservations for admin view");
+                foreach (var res in reservations.Take(5)) // Just log the first 5 for brevity
+                {
+                    System.Diagnostics.Debug.WriteLine($"Reservation ID: {res.Id}, Facility: {res.Facility?.Name}, User: {res.User?.Email}, Status: {res.Status}");
+                }
+                
+                return View(reservations);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ERROR loading reservations for admin: {ex.Message}");
+                TempData["ErrorMessage"] = $"Error loading reservations: {ex.Message}";
+                return View(new List<Reservation>());
+            }
         }
 
         // GET: Reservation/Details/5

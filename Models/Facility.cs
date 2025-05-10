@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CasaHeights.Models
 {
@@ -40,6 +41,7 @@ namespace CasaHeights.Models
         [Display(Name = "Hourly Rate")]
         [DataType(DataType.Currency)]
         [Range(0, 10000)]
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal HourlyRate { get; set; }
 
         [Display(Name = "Maintenance Day")]

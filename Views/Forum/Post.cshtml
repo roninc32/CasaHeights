@@ -1,0 +1,101 @@
+@model PostDetailViewModel
+@{
+    ViewData["Title"] = Model.Post.Title;
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h1 class="h4 mb-0">@Model.Post.Title</h1>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Forum
+                    </a>
+                </div>
+
+                <div class="card-body">
+                    <!-- Post Author Info -->
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="@(Model.Post.Author?.ProfilePicture ?? "/images/default-avatar.png")" 
+                             class="rounded-circle me-2" width="40" height="40" alt="Avatar" />
+                        <div>
+                            <div class="fw-medium">@Model.Post.Author?.FullName</div>
+                            <small class="text-muted">
+                                Posted on @Model.Post.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Post Content -->
+                    <div class="post-content mb-4">
+                        @Html.Raw(Model.Post.Content)
+                    </div>
+
+                    <!-- Categories and Tags -->
+                    <div class="mb-4">
+                        @foreach (var category in Model.Post.Categories)
+                        {
+                            <span class="badge bg-primary me-2">@category.Name</span>
+                        }
+                        @foreach (var tag in Model.Post.Tags)
+                        {
+                            <span class="badge bg-secondary me-1">#@tag.Name</span>
+                        }
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section mt-4">
+                        <h5 class="mb-3">Comments (@Model.Post.Comments.Count)</h5>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form asp-action="AddComment" method="post" class="mb-4">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="postId" value="@Model.Post.Id" />
+                                
+                                <div class="mb-3">
+                                    <textarea name="content" class="form-control" rows="3" 
+                                              placeholder="Write your comment..."></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-chat-dots me-2"></i>Add Comment
+                                </button>
+                            </form>
+                        }
+
+                        <div class="comments-list">
+                            @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                            {
+                                <div class="comment mb-3">
+                                    <div class="d-flex">
+                                        <img src="@(comment.Author?.ProfilePicture ?? "/images/default-avatar.png")" 
+                                             class="rounded-circle me-2" width="32" height="32" alt="Avatar" />
+                                        <div>
+                                            <div class="fw-medium">@comment.Author?.FullName</div>
+                                            <small class="text-muted">
+                                                @comment.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                                            </small>
+                                            <p class="mb-0 mt-1">@comment.Content</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <partial name="_ForumSidebar" model="Model.SidebarModel" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
